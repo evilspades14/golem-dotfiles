@@ -1,0 +1,21 @@
+{
+  "bar": {
+    "persistent": false,
+    "showOnHover": false
+  },
+  "background": {
+    "enabled": false,
+    "wallpaperEnabled": false,
+    "desktopClock": {
+      "enabled": false,
+      "scale": 1,
+      "position": "bottom-right",
+      "invertColors": false,
+      "background": {
+        "enabled": false,
+        "opacity": 0.7,
+        "blur": true
+      }
+    }
+  }
+}
