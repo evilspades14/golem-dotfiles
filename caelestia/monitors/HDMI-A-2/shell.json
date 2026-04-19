@@ -11,7 +11,7 @@
             "position": "bottom-right",
             "scale": 1
         },
-        "enabled": false,
+        "enabled": true,
         "wallpaperEnabled": false
     },
     "bar": {

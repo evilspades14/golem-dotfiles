@@ -441,26 +441,6 @@
         "visualiserBars": 45,
         "weatherLocation": "Raleigh"
     },
-    "session": {
-        "commands": {
-            "hibernate": [
-                "systemctl",
-                "hibernate"
-            ],
-            "logout": [
-                "loginctl terminate-user $USER"
-            ],
-            "reboot": [
-                "systemctl reboot"
-            ],
-            "shutdown": [
-                "systemctl poweroff"
-            ]
-        },
-        "dragThreshold": 30,
-        "enabled": true,
-        "vimKeybinds": false
-    },
     "sidebar": {
         "dragThreshold": 80,
         "enabled": true
