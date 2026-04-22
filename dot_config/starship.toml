@@ -1,0 +1,9 @@
+[python]
+detect_extensions = ['py']
+detect_files = ['requirements.txt', 'pyproject.toml', '.python-version']
+detect_folders = ['.venv', 'venv']
+format = 'via [🐍 (\($virtualenv\) )]($style)'
+
+[directory]
+truncation_length = 5
+style = "bold cyan"
