@@ -103,6 +103,7 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias reboot-windows="systemctl reboot --boot-loader-entry='auto-windows'"
+alias ssh="kitty +kitten ssh"
 
 # STARTUP
 
