@@ -103,7 +103,16 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias reboot-windows="systemctl reboot --boot-loader-entry='auto-windows'"
-alias ssh="kitty +kitten ssh"
+
+if [ "$TERM" = "xterm-kitty" ]; then
+    alias ssh='kitty +kitten ssh'
+fi
+
+# Ghostty shell integration for Bash. This should be at the top of your bashrc!
+if [ -n "${GHOSTTY_RESOURCES_DIR}" ]; then
+    builtin source ${GHOSTTY_RESOURCES_DIR}/shell-integration/zsh/ghostty-integration
+fi
+
 
 # STARTUP
 
