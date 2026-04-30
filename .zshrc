@@ -103,7 +103,7 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias reboot-windows="systemctl reboot --boot-loader-entry='auto-windows'"
-
+alias ssh='kitty +kitten ssh'
 if [ "$TERM" = "xterm-kitty" ]; then
     alias ssh='kitty +kitten ssh'
 fi
