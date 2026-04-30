@@ -118,7 +118,8 @@ fi
 
 # Run Fastfetch only in interactive shells
 if [[ -o interactive ]]; then
-  fastfetch --logo-type kitty
+  # fastfetch --logo-type kitty
+  milli fastfetch jellyfish --no-bg
 fi
 
 eval "$(starship init zsh)"
