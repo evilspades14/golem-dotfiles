@@ -464,7 +464,12 @@
         "vpn": {
             "enabled": true,
             "provider": [
-                "wireguard"
+                {
+                    "name": "wireguard",
+                    "interface": "wgs_client",
+                    "displayName": "Homegolem VPN",
+                    "enabled": true
+                }
             ]
         }
     }
