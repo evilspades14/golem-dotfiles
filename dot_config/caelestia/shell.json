@@ -402,7 +402,7 @@
     "lock": {
         "enableFprint": true,
         "maxFprintTries": 3,
-        "recolourLogo": false
+        "recolourLogo": true
     },
     "notifs": {
         "actionOnClick": false,
@@ -462,9 +462,9 @@
             "vpnChanged": true
         },
         "vpn": {
-            "enabled": false,
+            "enabled": true,
             "provider": [
-                "netbird"
+                "wireguard"
             ]
         }
     }
