@@ -437,7 +437,7 @@
         ],
         "smartScheme": true,
         "useFahrenheit": true,
-        "useTwelveHourClock": true,
+        "useTwelveHourClock": false,
         "visualiserBars": 45,
         "weatherLocation": "Raleigh"
     },
@@ -465,10 +465,10 @@
             "enabled": true,
             "provider": [
                 {
-                    "name": "wireguard",
-                    "interface": "wgs_client",
                     "displayName": "Homegolem VPN",
-                    "enabled": true
+                    "enabled": true,
+                    "interface": "wgs_client",
+                    "name": "wireguard"
                 }
             ]
         }
