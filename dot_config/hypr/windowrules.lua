@@ -463,7 +463,7 @@ hl.window_rule({
     match = {
         class = "^(Signal)$",
     },
-    -- TODO: review rule: "float true"
+    float = true
 })
 
 -- Signal-Gtk
@@ -473,7 +473,7 @@ hl.window_rule({
     match = {
         class = "^(com.github.rafostar.Clapper)$",
     },
-    -- TODO: review rule: "float true"
+    float = true
 })
 
 -- Clapper-Gtk
@@ -483,7 +483,7 @@ hl.window_rule({
     match = {
         class = "^(app.drey.Warp)$",
     },
-    -- TODO: review rule: "float true"
+    float = true
 })
 
 -- Warp-Gtk
@@ -493,17 +493,17 @@ hl.window_rule({
     match = {
         class = "^(net.davidotek.pupgui2)$",
     },
-    -- TODO: review rule: "float true"
+    float = true
 })
 
 -- ProtonUp-Qt
 
 hl.window_rule({
-    name  = "float_true",
+    name = "float_true",
     match = {
         class = "^(yad)$",
     },
-    -- TODO: review rule: "float true"
+    float = true
 })
 
 -- Protontricks-Gtk
@@ -513,7 +513,7 @@ hl.window_rule({
     match = {
         class = "^(eog)$",
     },
-    -- TODO: review rule: "float true"
+    float = true
 })
 
 -- Imageviewer-Gtk
