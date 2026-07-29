@@ -39,7 +39,7 @@ local environment = require("environment")
 local input = require("input")
 
 -- source = . /local.conf -> requires manual conversion
-local local_conf = require("local")
+-- local local_conf = require("local")
 -- TODO: convert . /local.conf to .lua and use require()
 
 -- This is an example Hyprland config file.
