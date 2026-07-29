@@ -5,7 +5,6 @@
 ---@module 'hl'
 
 -- █░█░█ █ █▄░█ █▀▄ █▀█ █░█░█   █▀█ █░█ █░░ █▀▀ █▀
-
 -- ▀▄▀▄▀ █ █░▀█ █▄▀ █▄█ ▀▄▀▄▀   █▀▄ █▄█ █▄▄ ██▄ ▄█
 
 -- See https://wiki.hyprland.org/Configuring/Window-Rules/
@@ -33,17 +32,17 @@ hl.window_rule({
 hl.window_rule({
     name  = "idle_inhibit_fullscr",
     match = {
-        match = "class ^(.*[Ss]potify.*)$",
+        class = "^(.*[Ss]potify.*)$",
     },
-    -- TODO: review rule: "idle_inhibit fullscreen true"
+    idle_inhibit = "fullscreen"
 })
 
 hl.window_rule({
     name  = "idle_inhibit_fullscr",
     match = {
-        match = "class ^(.*LibreWolf.*)$|^(.*floorp.*)$|^(.*brave-browser.*)$|^(.*firefox.*)$|^(.*chromium.*)$|^(.*zen.*)$|^(.*vivaldi.*)$",
+        class = "^(.*LibreWolf.*)$|^(.*floorp.*)$|^(.*brave-browser.*)$|^(.*firefox.*)$|^(.*chromium.*)$|^(.*zen.*)$|^(.*vivaldi.*)$",
     },
-    -- TODO: review rule: "idle_inhibit fullscreen true"
+    idle_inhibit = "fullscreen"
 })
 
 -- Picture-in-Picture
@@ -64,9 +63,9 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_90____0_90",
     match = {
-        match = "class ^(firefox)$",
+        class = "^(firefox)$",
     },
-    opacity = "0.90 $& 0.90 $& 1",
+    opacity = "0.90 0.90 1",
 })
 
 hl.window_rule({
