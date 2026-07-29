@@ -15,36 +15,28 @@
 --## DOTFILES ###
 
 -- source = . /keybinds.conf -> requires manual conversion
--- local keybinds = require("keybinds")
--- TODO: convert . /keybinds.conf to .lua and use require()
+local keybinds = require("keybinds")
 
 -- source = . /appearance.conf -> requires manual conversion
--- local appearance = require("appearance")
--- TODO: convert . /appearance.conf to .lua and use require()
+local appearance = require("appearance")
 
 -- source = . /nvidia.conf -> requires manual conversion
--- local nvidia = require("nvidia")
--- TODO: convert . /nvidia.conf to .lua and use require()
+local nvidia = require("nvidia")
 
 -- source = . /windowrules.conf -> requires manual conversion
--- local windowrules = require("windowrules")
--- TODO: convert . /windowrules.conf to .lua and use require()
+local windowrules = require("windowrules")
 
 -- source = . /monitors.conf -> requires manual conversion
--- local monitors = require("monitors")
--- TODO: convert . /monitors.conf to .lua and use require()
+local monitors = require("monitors")
 
 -- source = . /autostart.conf -> requires manual conversion
--- local autostart = require("autostart")
--- TODO: convert . /autostart.conf to .lua and use require()
+local autostart = require("autostart")
 
 -- source = . /environment.conf -> requires manual conversion
--- local environment = require("environment")
--- TODO: convert . /environment.conf to .lua and use require()
+local environment = require("environment")
 
 -- source = . /input.conf -> requires manual conversion
--- local input = require("input")
--- TODO: convert . /input.conf to .lua and use require()
+local input = require("input")
 
 -- source = . /local.conf -> requires manual conversion
 -- local local = require("local")
