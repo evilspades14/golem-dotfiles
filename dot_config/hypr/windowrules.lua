@@ -25,9 +25,9 @@
 hl.window_rule({
     name  = "idle_inhibit_fullscr",
     match = {
-        match = "class ^(.*celluloid.*)$|^(.*mpv.*)$|^(.*vlc.*)$",
+        class = "^(.*celluloid.*)$|^(.*mpv.*)$|^(.*vlc.*)$",
     },
-    -- TODO: review rule: "idle_inhibit fullscreen true"
+    idle_inhibit = "fullscreen"
 })
 
 hl.window_rule({
