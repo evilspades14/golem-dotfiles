@@ -20,8 +20,10 @@ local keybinds = require("keybinds")
 -- source = . /appearance.conf -> requires manual conversion
 local appearance = require("appearance")
 
--- source = . /nvidia.conf -> requires manual conversion
+{{- if not (.intelOnly | default false) }}
 local nvidia = require("nvidia")
+{{- end }}
+
 
 -- source = . /windowrules.conf -> requires manual conversion
 local windowrules = require("windowrules")
