@@ -71,17 +71,17 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_90____0_90",
     match = {
-        match = "class ^(brave-browser)$",
+        class = "^(brave-browser)$",
     },
-    opacity = "0.90 $& 0.90 $& 1",
+    opacity = "0.90 0.90 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_80____0_80",
     match = {
-        match = "class ^(code-oss)$",
+        class = "^(code-oss)$",
     },
-    opacity = "0.80 $& 0.80 $& 1",
+    opacity = "0.80 0.80 1",
 })
 
 hl.window_rule({
