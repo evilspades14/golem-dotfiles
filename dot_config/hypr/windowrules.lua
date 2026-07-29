@@ -87,7 +87,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_80____0_80",
     match = {
-        match = "class ^([Cc]ode)$",
+        class = "^([Cc]ode)$",
     },
     opacity = "0.80 0.80 1",
 })
@@ -401,7 +401,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_80_0_80",
     match = {
-        match = "class ^(io.github.alainm23.planify)$",
+        class = "^(io.github.alainm23.planify)$",
     },
     opacity = "0.80 0.80",
 })
@@ -411,7 +411,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_80_0_80",
     match = {
-        match = "class ^(io.gitlab.theevilskeleton.Upscaler)$",
+        class = "^(io.gitlab.theevilskeleton.Upscaler)$",
     },
     opacity = "0.80 0.80",
 })
@@ -421,7 +421,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_80_0_80",
     match = {
-        match = "class ^(com.github.unrud.VideoDownloader)$",
+        class = "^(com.github.unrud.VideoDownloader)$",
     },
     opacity = "0.80 0.80",
 })
@@ -431,7 +431,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_80_0_80",
     match = {
-        match = "class ^(io.gitlab.adhami3310.Impression)$",
+        class = "^(io.gitlab.adhami3310.Impression)$",
     },
     opacity = "0.80 0.80",
 })
@@ -441,7 +441,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_80_0_80",
     match = {
-        match = "class ^(io.missioncenter.MissionCenter)$",
+        class = "^(io.missioncenter.MissionCenter)$",
     },
     opacity = "0.80 0.80",
 })
@@ -451,7 +451,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_80_0_80",
     match = {
-        match = "class ^(io.github.flattool.Warehouse)$",
+        class = "^(io.github.flattool.Warehouse)$",
     },
     opacity = "0.80 0.80",
 })
@@ -461,7 +461,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "float_true",
     match = {
-        match = "class ^(Signal)$",
+        class = "^(Signal)$",
     },
     -- TODO: review rule: "float true"
 })
@@ -471,7 +471,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "float_true",
     match = {
-        match = "class ^(com.github.rafostar.Clapper)$",
+        class = "^(com.github.rafostar.Clapper)$",
     },
     -- TODO: review rule: "float true"
 })
@@ -481,7 +481,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "float_true",
     match = {
-        match = "class ^(app.drey.Warp)$",
+        class = "^(app.drey.Warp)$",
     },
     -- TODO: review rule: "float true"
 })
@@ -491,7 +491,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "float_true",
     match = {
-        match = "class ^(net.davidotek.pupgui2)$",
+        class = "^(net.davidotek.pupgui2)$",
     },
     -- TODO: review rule: "float true"
 })
@@ -501,7 +501,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "float_true",
     match = {
-        match = "class ^(yad)$",
+        class = "^(yad)$",
     },
     -- TODO: review rule: "float true"
 })
@@ -511,7 +511,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "float_true",
     match = {
-        match = "class ^(eog)$",
+        class = "^(eog)$",
     },
     -- TODO: review rule: "float true"
 })
@@ -521,7 +521,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "float_true",
     match = {
-        match = "class ^(io.github.alainm23.planify)$",
+        class = "^(io.github.alainm23.planify)$",
     },
     -- TODO: review rule: "float true"
 })
@@ -531,7 +531,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "float_true",
     match = {
-        match = "class ^(io.gitlab.theevilskeleton.Upscaler)$",
+        class = "^(io.gitlab.theevilskeleton.Upscaler)$",
     },
     -- TODO: review rule: "float true"
 })
@@ -541,7 +541,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "float_true",
     match = {
-        match = "class ^(com.github.unrud.VideoDownloader)$",
+        class = "^(com.github.unrud.VideoDownloader)$",
     },
     -- TODO: review rule: "float true"
 })
@@ -551,7 +551,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "float_true",
     match = {
-        match = "class ^(io.gitlab.adhami3310.Impression)$",
+        class = "^(io.gitlab.adhami3310.Impression)$",
     },
     -- TODO: review rule: "float true"
 })
@@ -561,7 +561,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "float_true",
     match = {
-        match = "class ^(io.missioncenter.MissionCenter)$",
+        class = "^(io.missioncenter.MissionCenter)$",
     },
     -- TODO: review rule: "float true"
 })
@@ -573,7 +573,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "no_initial_focus_tru",
     match = {
-        match = "title ^(win[0-9]+)$",
+        title = "^(win[0-9]+)$",
     },
     -- TODO: review rule: "no_initial_focus true"
 })
@@ -581,7 +581,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "float_true",
     match = {
-        match = "title ^([Pp]icture.[Ii]n.[Pp]icture)",
+        title = "^([Pp]icture.[Ii]n.[Pp]icture)",
     },
     -- TODO: review rule: "float true"
 })
