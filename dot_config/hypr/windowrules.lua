@@ -89,189 +89,189 @@ hl.window_rule({
     match = {
         match = "class ^([Cc]ode)$",
     },
-    opacity = "0.80 $& 0.80 $& 1",
+    opacity = "0.80 0.80 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_80____0_80",
     match = {
-        match = "class ^(code-url-handler)$",
+        class = "^(code-url-handler)$",
     },
-    opacity = "0.80 $& 0.80 $& 1",
+    opacity = "0.80 0.80 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_80____0_80",
     match = {
-        match = "class ^(code-insiders-url-handler)$",
+        class = "^(code-insiders-url-handler)$",
     },
-    opacity = "0.80 $& 0.80 $& 1",
+    opacity = "0.80 0.80 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_80____0_80",
     match = {
-        match = "class ^(kitty)$",
+        class = "^(kitty)$",
     },
-    opacity = "0.80 $& 0.80 $& 1",
+    opacity = "0.80 0.80 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_80____0_80",
     match = {
-        match = "class ^(org.kde.dolphin)$",
+        class = "^(org.kde.dolphin)$",
     },
-    opacity = "0.80 $& 0.80 $& 1",
+    opacity = "0.80 0.80 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_80____0_80",
     match = {
-        match = "class ^(org.kde.ark)$",
+        class = "^(org.kde.ark)$",
     },
-    opacity = "0.80 $& 0.80 $& 1",
+    opacity = "0.80 0.80 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_80____0_80",
     match = {
-        match = "class ^(nwg-look)$",
+        class = "^(nwg-look)$",
     },
-    opacity = "0.80 $& 0.80 $& 1",
+    opacity = "0.80 0.80 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_80____0_80",
     match = {
-        match = "class ^(qt5ct)$",
+        class = "^(qt5ct)$",
     },
-    opacity = "0.80 $& 0.80 $& 1",
+    opacity = "0.80 0.80 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_80____0_80",
     match = {
-        match = "class ^(qt6ct)$",
+        class = "^(qt6ct)$",
     },
-    opacity = "0.80 $& 0.80 $& 1",
+    opacity = "0.80 0.80 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_80____0_80",
     match = {
-        match = "class ^(kvantummanager)$",
+        class = "^(kvantummanager)$",
     },
-    opacity = "0.80 $& 0.80 $& 1",
+    opacity = "0.80 0.80 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_80____0_70",
     match = {
-        match = "class ^(org.pulseaudio.pavucontrol)$",
+        class = "^(org.pulseaudio.pavucontrol)$",
     },
-    opacity = "0.80 $& 0.70 $& 1",
+    opacity = "0.80 0.70 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_80____0_70",
     match = {
-        match = "class ^(blueman-manager)$",
+        class = "^(blueman-manager)$",
     },
-    opacity = "0.80 $& 0.70 $& 1",
+    opacity = "0.80 0.70 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_80____0_70",
     match = {
-        match = "class ^(nm-applet)$",
+        class = "^(nm-applet)$",
     },
-    opacity = "0.80 $& 0.70 $& 1",
+    opacity = "0.80 0.70 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_80____0_70",
     match = {
-        match = "class ^(nm-connection-editor)$",
+        class = "^(nm-connection-editor)$",
     },
-    opacity = "0.80 $& 0.70 $& 1",
+    opacity = "0.80 0.70 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_80____0_70",
     match = {
-        match = "class ^(org.kde.polkit-kde-authentication-agent-1)$",
+        class = "^(org.kde.polkit-kde-authentication-agent-1)$",
     },
-    opacity = "0.80 $& 0.70 $& 1",
+    opacity = "0.80 0.70 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_80____0_70",
     match = {
-        match = "class ^(polkit-gnome-authentication-agent-1)$",
+        class = "^(polkit-gnome-authentication-agent-1)$",
     },
-    opacity = "0.80 $& 0.70 $& 1",
+    opacity = "0.80 0.70 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_80____0_70",
     match = {
-        match = "class ^(org.freedesktop.impl.portal.desktop.gtk)$",
+        class = "^(org.freedesktop.impl.portal.desktop.gtk)$",
     },
-    opacity = "0.80 $& 0.70 $& 1",
+    opacity = "0.80 0.70 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_80____0_70",
     match = {
-        match = "class ^(org.freedesktop.impl.portal.desktop.hyprland)$",
+        class = "^(org.freedesktop.impl.portal.desktop.hyprland)$",
     },
-    opacity = "0.80 $& 0.70 $& 1",
+    opacity = "0.80 0.70 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_70____0_70",
     match = {
-        match = "class ^([Ss]team)$",
+        class = "^([Ss]team)$",
     },
-    opacity = "0.70 $& 0.70 $& 1",
+    opacity = "0.70 0.70 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_70____0_70",
     match = {
-        match = "class ^(steamwebhelper)$",
+        class = "^(steamwebhelper)$",
     },
-    opacity = "0.70 $& 0.70 $& 1",
+    opacity = "0.70 0.70 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_70____0_70",
     match = {
-        match = "class ^([Ss]potify)$",
+        class = "^([Ss]potify)$",
     },
-    opacity = "0.70 $& 0.70 $& 1",
+    opacity = "0.70 0.70 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_70____0_70",
     match = {
-        match = "initial_title ^(Spotify Free)$",
+        initial_title = "^(Spotify Free)$",
     },
-    opacity = "0.70 $& 0.70 $& 1",
+    opacity = "0.70 0.70 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_70____0_70",
     match = {
-        match = "initial_title ^(Spotify Premium)$",
+        initial_title = "^(Spotify Premium)$",
     },
-    opacity = "0.70 $& 0.70 $& 1",
+    opacity = "0.70 0.70 1",
 })
 
 hl.window_rule({
     name  = "opacity_0_90_0_90",
     match = {
-        match = "class ^(com.github.rafostar.Clapper)$",
+        class = "^(com.github.rafostar.Clapper)$",
     },
     opacity = "0.90 0.90",
 })
@@ -281,7 +281,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_80_0_80",
     match = {
-        match = "class ^(com.github.tchx84.Flatseal)$",
+        class = "^(com.github.tchx84.Flatseal)$",
     },
     opacity = "0.80 0.80",
 })
@@ -291,7 +291,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_80_0_80",
     match = {
-        match = "class ^(hu.kramo.Cartridges)$",
+        class = "^(hu.kramo.Cartridges)$",
     },
     opacity = "0.80 0.80",
 })
@@ -301,7 +301,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_80_0_80",
     match = {
-        match = "class ^(com.obsproject.Studio)$",
+        class = "^(com.obsproject.Studio)$",
     },
     opacity = "0.80 0.80",
 })
@@ -311,7 +311,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_80_0_80",
     match = {
-        match = "class ^(gnome-boxes)$",
+        class = "^(gnome-boxes)$",
     },
     opacity = "0.80 0.80",
 })
@@ -321,7 +321,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_80_0_80",
     match = {
-        match = "class ^(vesktop)$",
+        class = "^(vesktop)$",
     },
     opacity = "0.80 0.80",
 })
@@ -331,7 +331,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_80_0_80",
     match = {
-        match = "class ^(discord)$",
+        class = "^(discord)$",
     },
     opacity = "0.80 0.80",
 })
@@ -341,7 +341,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_80_0_80",
     match = {
-        match = "class ^(WebCord)$",
+        class = "^(WebCord)$",
     },
     opacity = "0.80 0.80",
 })
@@ -351,7 +351,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_80_0_80",
     match = {
-        match = "class ^(ArmCord)$",
+        class = "^(ArmCord)$",
     },
     opacity = "0.80 0.80",
 })
@@ -361,7 +361,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_80_0_80",
     match = {
-        match = "class ^(app.drey.Warp)$",
+        class = "^(app.drey.Warp)$",
     },
     opacity = "0.80 0.80",
 })
@@ -371,7 +371,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_80_0_80",
     match = {
-        match = "class ^(net.davidotek.pupgui2)$",
+        class = "^(net.davidotek.pupgui2)$",
     },
     opacity = "0.80 0.80",
 })
@@ -381,7 +381,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_80_0_80",
     match = {
-        match = "class ^(yad)$",
+        class = "^(yad)$",
     },
     opacity = "0.80 0.80",
 })
@@ -391,7 +391,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity_0_80_0_80",
     match = {
-        match = "class ^(Signal)$",
+        class = "^(Signal)$",
     },
     opacity = "0.80 0.80",
 })
