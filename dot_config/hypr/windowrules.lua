@@ -523,7 +523,7 @@ hl.window_rule({
     match = {
         class = "^(io.github.alainm23.planify)$",
     },
-    -- TODO: review rule: "float true"
+    float = true
 })
 
 -- planify-Gtk
@@ -533,7 +533,7 @@ hl.window_rule({
     match = {
         class = "^(io.gitlab.theevilskeleton.Upscaler)$",
     },
-    -- TODO: review rule: "float true"
+    float = true
 })
 
 -- Upscaler-Gtk
@@ -543,7 +543,7 @@ hl.window_rule({
     match = {
         class = "^(com.github.unrud.VideoDownloader)$",
     },
-    -- TODO: review rule: "float true"
+    float = true
 })
 
 -- VideoDownloader-Gkk
@@ -553,7 +553,7 @@ hl.window_rule({
     match = {
         class = "^(io.gitlab.adhami3310.Impression)$",
     },
-    -- TODO: review rule: "float true"
+    float = true
 })
 
 -- Impression-Gtk
@@ -563,7 +563,7 @@ hl.window_rule({
     match = {
         class = "^(io.missioncenter.MissionCenter)$",
     },
-    -- TODO: review rule: "float true"
+    float = true
 })
 
 -- MissionCenter-Gtk
@@ -575,7 +575,7 @@ hl.window_rule({
     match = {
         title = "^(win[0-9]+)$",
     },
-    -- TODO: review rule: "no_initial_focus true"
+    no_initial_focus = true
 })
 
 hl.window_rule({
@@ -583,7 +583,7 @@ hl.window_rule({
     match = {
         title = "^([Pp]icture.[Ii]n.[Pp]icture)",
     },
-    -- TODO: review rule: "float true"
+    float = true
 })
 
 -- █░░ ▄▀█ █▄█ █▀▀ █▀█   █▀█ █░█ █░░ █▀▀ █▀
@@ -592,63 +592,63 @@ hl.window_rule({
 
 hl.layer_rule({
     match = {
-        namespace = "match:namespace rofi",
+        namespace = "rofi",
     },
     blur = true,
 })
 
 hl.layer_rule({
     match = {
-        namespace = "match:namespace rofi",
+        namespace = "rofi",
     },
     ignore_alpha = 0,
 })
 
 hl.layer_rule({
     match = {
-        namespace = "match:namespace notifications",
+        namespace = "notifications",
     },
     blur = true,
 })
 
 hl.layer_rule({
     match = {
-        namespace = "match:namespace notifications",
+        namespace = "notifications",
     },
     ignore_alpha = 0,
 })
 
 hl.layer_rule({
     match = {
-        namespace = "match:namespace swaync-notification-window",
+        namespace = "swaync-notification-window",
     },
     blur = true,
 })
 
 hl.layer_rule({
     match = {
-        namespace = "match:namespace swaync-notification-window",
+        namespace = "swaync-notification-window",
     },
     ignore_alpha = 0,
 })
 
 hl.layer_rule({
     match = {
-        namespace = "match:namespace swaync-control-center",
+        namespace = "swaync-control-center",
     },
     blur = true,
 })
 
 hl.layer_rule({
     match = {
-        namespace = "match:namespace swaync-control-center",
+        namespace = "swaync-control-center",
     },
     ignore_alpha = 0,
 })
 
 hl.layer_rule({
     match = {
-        namespace = "match:namespace logout_dialog",
+        namespace = "logout_dialog",
     },
     blur = true,
 })
