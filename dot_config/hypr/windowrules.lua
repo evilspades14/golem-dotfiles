@@ -73,7 +73,7 @@ hl.window_rule({
     match = {
         class = "^(brave-browser)$",
     },
-    opacity = "0.90 0.90 1",
+    opacity = "1 0.90 1",
 })
 
 hl.window_rule({
