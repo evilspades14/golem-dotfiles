@@ -1,4 +1,4 @@
-{{- if eq .graphics "nvidia }}
+{{- if eq .graphics "nvidia" }}
 
 ---@module 'hl'
 
@@ -15,4 +15,3 @@ hl.config({
 hl.env("GBM_BACKEND", "nvidia-drm")
 
 {{- end }}
-
