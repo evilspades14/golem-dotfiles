@@ -20,7 +20,7 @@ local keybinds = require("keybinds")
 -- source = . /appearance.conf -> requires manual conversion
 local appearance = require("appearance")
 
-{{- if not (.intelOnly | default false) }}
+{{- if eq .graphics "nvidia }}
 local nvidia = require("nvidia")
 {{- end }}
 
