@@ -20,7 +20,7 @@ local keybinds = require("keybinds")
 -- source = . /appearance.conf -> requires manual conversion
 local appearance = require("appearance")
 
-{{- if eq .chezmoi.data.graphics "nvidia" }}
+{{- if eq .data.graphics "nvidia" }}
 local nvidia = require("nvidia")
 {{- end }}
 
