@@ -4,6 +4,7 @@ run_onchange_before_10-install-packages-arch.sh
 .config/caelestia
 .config/remmina
 .config/kitty
+.config/hypr
 {{ end }}
 
 {{ if ne .chezmoi.os "windows" }}
