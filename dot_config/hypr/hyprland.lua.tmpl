@@ -26,7 +26,7 @@ local monitors = require("monitors")
 local autostart = require("autostart")
 local environment = require("environment")
 local input = require("input")
-{{- if fileExists "./local.lua" }}
+{{- if exists "./local.lua" }}
 local local_ = require("local")
 {{- end }}
 
