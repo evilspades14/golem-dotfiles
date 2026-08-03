@@ -13,3 +13,9 @@
 hl.env("XCURSOR_SIZE", 24)
 hl.env("HYPRCURSOR_SIZE", 24)
 hl.env("GTK_THEME", "Breeze-Dark")
+
+hl.config({
+  xwayland = {
+    force_zero_scaling = true
+  }
+})
