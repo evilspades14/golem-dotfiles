@@ -1,0 +1,7 @@
+packages:
+  arch:
+    pacman:
+      - git
+    aur:
+      - spotify
+      - eza

@@ -1,0 +1,14 @@
+{{ if eq .chezmoi.osRelease.id "arch" -}}
+#!/bin/bash
+set -eufo pipefail
+
+sudo pacman -S --needed --noconfirm \
+{{ range .packages.arch.pacman -}}
+  {{ . | quote }} \
+{{ end }}
+
+yay -S --needed --noconfirm \
+{{ range .packages.arch.aur -}}
+  {{ . | quote }} \
+{{ end }}
+{{ end -}}
