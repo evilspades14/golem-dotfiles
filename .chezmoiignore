@@ -1,0 +1,10 @@
+{{ if ne .chezmoi.os "linux" }}
+run_onchange_before_10-install-packages-arch.sh
+.zshrc
+.config/caelestia
+.config/remmina
+.config/kitty
+{{ end }}
+
+{{ if ne .chezmoi.os "windows" }}
+{{ end }}
