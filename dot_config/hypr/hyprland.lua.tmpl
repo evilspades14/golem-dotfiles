@@ -14,51 +14,18 @@
 
 --## DOTFILES ###
 
--- source = . /keybinds.conf -> requires manual conversion
 local keybinds = require("keybinds")
-
--- source = . /appearance.conf -> requires manual conversion
 local appearance = require("appearance")
-
 {{- if eq .graphics "nvidia" }}
 local nvidia = require("nvidia")
 {{- end }}
-
-
--- source = . /windowrules.conf -> requires manual conversion
 local windowrules = require("windowrules")
-
--- source = . /monitors.conf -> requires manual conversion
+{{- if stat (joinPath .chezmoi.homeDir ".config/hypr/monitors.lua") }}
 local monitors = require("monitors")
-
--- source = . /autostart.conf -> requires manual conversion
+{{- end }}
 local autostart = require("autostart")
-
--- source = . /environment.conf -> requires manual conversion
 local environment = require("environment")
-
--- source = . /input.conf -> requires manual conversion
 local input = require("input")
-
--- source = . /local.conf -> requires manual conversion
--- local local_conf = require("local")
--- TODO: convert . /local.conf to .lua and use require()
-
--- This is an example Hyprland config file.
-
--- Refer to the wiki for more information.
-
--- https://wiki.hypr.land/Configuring/
-
--- Please note not all available settings / options are set here.
-
--- For a full list, see the wiki
-
--- You can split this configuration into multiple files
-
--- Create your files separately and then link them to this file like this:
-
--- source = ~/.config/hypr/myColors.conf
 
 hl.env("XDG_MENU_PREFIX", "arch-")
 
