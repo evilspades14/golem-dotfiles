@@ -2,6 +2,8 @@ packages:
   arch:
     pacman:
       - git
+      - rustup
+      - pnpm
     aur:
       - spotify
       - eza
