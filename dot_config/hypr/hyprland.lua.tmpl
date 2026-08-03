@@ -26,6 +26,9 @@ local monitors = require("monitors")
 local autostart = require("autostart")
 local environment = require("environment")
 local input = require("input")
+{{- if fileExists "./local.lua" }}
+local local_ = require("local")
+{{- end }}
 
 hl.env("XDG_MENU_PREFIX", "arch-")
 
