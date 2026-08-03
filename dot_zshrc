@@ -113,6 +113,13 @@ fi
 
 # Run Fastfetch only in interactive shells
 if [[ -o interactive ]]; then
+  prev=""
+  for i in {1..10}; do
+    cur=$(stty size)
+    [[ "$cur" == "$prev" ]] && break
+    prev="$cur"
+    sleep 0.02
+  done
   fastfetch --logo-type kitty
 fi
 
