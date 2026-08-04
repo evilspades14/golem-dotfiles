@@ -7,7 +7,7 @@ packages:
       - go
     aur:
       - spotify
-      - spicetify
+      - spicetify-bin
       - spicetify-cli
       - eza
       - uv
