@@ -4,8 +4,13 @@ packages:
       - git
       - rustup
       - pnpm
+      - go
     aur:
       - spotify
       - spicetify
       - spicetify-cli
       - eza
+      - uv
+      - gnome-keyring
+      - zed
+      - yazi
