@@ -7,4 +7,5 @@ packages:
     aur:
       - spotify
       - spicetify
+      - spicetify-cli
       - eza
