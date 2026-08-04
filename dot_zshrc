@@ -22,14 +22,7 @@ done
 
 # Run Fastfetch only in interactive shells
 if [[ -o interactive ]]; then
-  prev=""
-  for i in {1..10}; do
-    cur=$(stty size)
-    [[ "$cur" == "$prev" ]] && break
-    prev="$cur"
-    sleep 0.02
-  done
-  fastfetch --logo-type kitty
+  fastfetch --logo-type kitty-direct
 fi
 
 eval "$(starship init zsh)"
