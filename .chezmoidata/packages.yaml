@@ -6,4 +6,5 @@ packages:
       - pnpm
     aur:
       - spotify
+      - spicetify
       - eza

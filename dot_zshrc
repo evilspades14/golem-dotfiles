@@ -97,8 +97,10 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+
+
 alias reboot-windows="systemctl reboot --boot-loader-entry='auto-windows'"
-alias ssh='kitty +kitten ssh'
+alias ls="eza -l --icons"
 if [ "$TERM" = "xterm-kitty" ]; then
     alias ssh='kitty +kitten ssh'
 fi
