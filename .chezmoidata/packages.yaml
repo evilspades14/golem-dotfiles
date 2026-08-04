@@ -8,7 +8,6 @@ packages:
     aur:
       - spotify
       - spicetify-bin
-      - spicetify-cli
       - eza
       - uv
       - gnome-keyring
