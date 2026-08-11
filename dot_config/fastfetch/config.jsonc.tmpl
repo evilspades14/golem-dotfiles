@@ -28,8 +28,16 @@
     "break",
     "colors"
   ],
+  {{- if eq .chezmoi.os "linux" }}
   "logo": {
     "type": "auto",
     "source": "~/.config/fastfetch/images/*.png"
   }
+  {{- end }}
+  {{- if eq .chezmoi.os "windows" }}
+  "logo": {
+    "type": "file",
+    "source": "~/.config/fastfetch/c-c.txt"
+  }
+  {{- end }}
 }
