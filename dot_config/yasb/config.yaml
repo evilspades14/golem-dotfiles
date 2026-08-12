@@ -59,7 +59,7 @@ widgets:
     type: "yasb.wallpapers.WallpapersWidget"
     options:
       label: "<span>\uf03e</span>"
-      image_path: "C:\\Users\\Jackson\\Proton Drive\\jackson.homegolem\\My files\\Wallpaper\\Desktop"
+      image_path: "~/.local/share/wallpaper"
       change_automatically: false # Automatically change wallpaper
       update_interval: 60
       gallery:
