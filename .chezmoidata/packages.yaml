@@ -5,6 +5,7 @@ packages:
       - rustup
       - pnpm
       - go
+      - hyprshutdown
     aur:
       - spotify
       - spicetify-bin
@@ -13,3 +14,4 @@ packages:
       - gnome-keyring
       - zed
       - yazi
+      - ttf-firacode-nerd
