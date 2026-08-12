@@ -1,6 +1,7 @@
 {{ if ne .chezmoi.os "linux" }}
 run_onchange_before_10-install-packages-arch.sh
 .zshrc
+.zprofile
 .config/caelestia
 .config/remmina
 .config/kitty
@@ -9,4 +10,5 @@ run_onchange_before_10-install-packages-arch.sh
 {{ end }}
 
 {{ if ne .chezmoi.os "windows" }}
+.config/yasb
 {{ end }}
