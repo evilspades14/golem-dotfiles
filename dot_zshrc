@@ -20,7 +20,7 @@ setopt HIST_FIND_NO_DUPS
 setopt HIST_SAVE_NO_DUPS
 setopt HIST_REDUCE_BLANKS
 
-plugins=(git zsh-syntax-highlighting zsh-completions zsh-autosuggestions)
+plugins=(git zsh-completions zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
