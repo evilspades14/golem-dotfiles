@@ -42,8 +42,6 @@ fi
 
 eval "$(starship init zsh)"
 
-autoload -Uz compinit && compinit
-
 function y() {
   local tmp cwd; tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
   command yazi "$@" --cwd-file="$tmp"
