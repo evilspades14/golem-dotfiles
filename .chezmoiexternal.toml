@@ -15,9 +15,4 @@
     type = "archive"
     url = "https://github.com/zsh-users/zsh-autosuggestions/archive/master.tar.gz"
     refreshPeriod = "168h"
-["/usr/share/sddm/themes/caelestia-sddm"]
-    type = "archive"
-    url = "https://github.com/ItsABigIgloo/caelestia-sddm/archive/refs/heads/main.tar.gz"
-    exact = true
-    stripComponents = 1
 {{ end }}
