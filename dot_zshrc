@@ -29,9 +29,9 @@ if [ -n "${GHOSTTY_RESOURCES_DIR}" ]; then
     builtin source ${GHOSTTY_RESOURCES_DIR}/shell-integration/zsh/ghostty-integration
 fi
 
-for f in $HOME/.zsh/*.zsh; do
-  source "$f"
-done
+# for f in $HOME/.zsh/*.zsh; do
+#   source "$f"
+# done
 
 # STARTUP
 
@@ -41,8 +41,6 @@ if [[ -o interactive ]]; then
 fi
 
 eval "$(starship init zsh)"
-
-autoload -Uz compinit && compinit
 
 function y() {
   local tmp cwd; tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
