@@ -15,7 +15,7 @@
 
 --   Any future breaking changes disables this block and notifies the user to update.
 
---   User template files will be provided in $XDG_DATA_HOME/hyde/templates/hypr/windowrules.conf for manual update. 
+--   User template files will be provided in $XDG_DATA_HOME/hyde/templates/hypr/windowrules.conf for manual update.
 
 -- hyprlang if WINDOWRULES_HYPRLAND_V_0_53
 
@@ -109,7 +109,8 @@ hl.window_rule({
 })
 
 hl.window_rule({
-    name  = "opacity_0_80____0_80",
+    name    = "opacity_0_80____0_80",
+    float = true,
     match = {
         class = "^(kitty)$",
     },
@@ -248,22 +249,6 @@ hl.window_rule({
     name  = "opacity_0_70____0_70",
     match = {
         class = "^([Ss]potify)$",
-    },
-    opacity = "0.70 0.70 1",
-})
-
-hl.window_rule({
-    name  = "opacity_0_70____0_70",
-    match = {
-        initial_title = "^(Spotify Free)$",
-    },
-    opacity = "0.70 0.70 1",
-})
-
-hl.window_rule({
-    name  = "opacity_0_70____0_70",
-    match = {
-        initial_title = "^(Spotify Premium)$",
     },
     opacity = "0.70 0.70 1",
 })
