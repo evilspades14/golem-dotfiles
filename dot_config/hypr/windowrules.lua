@@ -109,10 +109,9 @@ hl.window_rule({
 })
 
 hl.window_rule({
-    name    = "opacity_0_80____0_80",
     float = true,
     match = {
-        class = "kitty",
+        initial_class = "kitty",
     },
     size = "800 600",
     opacity = "0.80 0.80 1",
