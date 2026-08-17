@@ -1,6 +1,7 @@
 {{- $graphicschoices := list "intel" "nvidia" "amd" -}}
 {{- $graphics := promptChoiceOnce . "graphics" "Select the graphics backend for this system." $graphicschoices "nvidia" -}}
 
+
 [data]
     graphics = {{- $graphics | quote }}
 

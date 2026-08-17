@@ -7,10 +7,10 @@ run_onchange_before_10-install-packages-arch.sh
 .config/kitty
 .config/ghostty
 .config/hypr
-run_onchange_before_10-install-packages-arch.sh
+10-install-packages-arch.sh
 {{ end }}
 
 {{ if ne .chezmoi.os "windows" }}
 .config/yasb
-run_onchange_before_10-install-packages-win.ps1
+10-install-packages-win.ps1
 {{ end }}
