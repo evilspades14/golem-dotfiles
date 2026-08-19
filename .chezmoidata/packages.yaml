@@ -1,18 +1,20 @@
 packages:
   arch:
     pacman:
+      - btop
       - git
-      - rustup
-      - pnpm
-      - go
       - hyprshutdown
+      - kitty
+      - starship
+      - zsh
     aur:
-      - spotify
-      - spicetify-bin
+      - caelestia-shell-git
       - eza
-      - uv
       - gnome-keyring
-      - zed
-      - yazi
+      - hyprland
+      - spicetify-bin
+      - spotify
       - ttf-firacode-nerd
-      - pi-bin
+      - uv
+      - yazi
+      - zed

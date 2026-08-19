@@ -31,7 +31,9 @@
   {{- if eq .chezmoi.os "linux" }}
   "logo": {
     "type": "auto",
-    "source": "~/.config/fastfetch/images/*.png"
+    "source": "~/.config/fastfetch/images/*.png",
+    "preserveAspectRatio": true,
+    "width": 50
   }
   {{- end }}
   {{- if eq .chezmoi.os "windows" }}
