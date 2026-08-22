@@ -113,7 +113,7 @@ hl.window_rule({
     match = {
         initial_class = "kitty",
     },
-    size = { "monitor_w * 0.5", "monitor_h * 0.5" },
+    size = { "monitor_w * 0.7", "monitor_h * 0.7" },
     opacity = "0.80 0.80 1",
 })
 

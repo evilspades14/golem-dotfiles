@@ -3,9 +3,6 @@
 [aws]
 format = '\[[$symbol($profile)(\($region\))(\[$duration\])]($style)\]'
 
-[azure]
-format = '\[[$symbol($subscription)]($style)\]'
-
 [battery]
 format = '\[[$symbol$percentage]($style)\]'
 
