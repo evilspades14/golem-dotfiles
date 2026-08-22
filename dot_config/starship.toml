@@ -42,9 +42,6 @@ format = '\[[$symbol($version)]($style)\]'
 [daml]
 format = '\[[$symbol($version)]($style)\]'
 
-[dart]
-format = '\[[$symbol($version)]($style)\]'
-
 [deno]
 format = '\[[$symbol($version)]($style)\]'
 
@@ -67,9 +64,6 @@ format = '\[[$symbol($version)]($style)\]'
 format = '\[[$symbol($version)]($style)\]'
 
 [fennel]
-format = '\[[$symbol($version)]($style)\]'
-
-[fortran]
 format = '\[[$symbol($version)]($style)\]'
 
 [fossil_branch]
@@ -108,15 +102,6 @@ format = '\[[$symbol($version)]($style)\]'
 [guix_shell]
 format = '\[[$symbol]($style)\]'
 
-[haskell]
-format = '\[[$symbol($version)]($style)\]'
-
-[haxe]
-format = '\[[$symbol($version)]($style)\]'
-
-[helm]
-format = '\[[$symbol($version)]($style)\]'
-
 [hg_branch]
 format = '\[[$symbol$branch]($style)\]'
 
@@ -128,9 +113,6 @@ format = '\[[$symbol($version)]($style)\]'
 
 [jobs]
 format = '\[[$symbol$number]($style)\]'
-
-[julia]
-format = '\[[$symbol($version)]($style)\]'
 
 [kotlin]
 format = '\[[$symbol($version)]($style)\]'
@@ -150,12 +132,6 @@ format = '\[$symbol[$ram( | $swap)]($style)\]'
 [meson]
 format = '\[[$symbol$project]($style)\]'
 
-[mise]
-format = '\[[$symbol$health]($style)\]'
-
-[mojo]
-format = '\[[$symbol($version)]($style)\]'
-
 [nats]
 format = '\[[$symbol$name]($style)\]'
 
@@ -165,23 +141,14 @@ format = '\[[$symbol \[$name\]]($style)\]'
 [nim]
 format = '\[[$symbol($version)]($style)\]'
 
-[nix_shell]
-format = '\[[$symbol$state( \($name\))]($style)\]'
-
 [nodejs]
 format = '\[[$symbol($version)]($style)\]'
 
 [ocaml]
 format = '\[[$symbol($version)(\($switch_indicator$switch_name\))]($style)\]'
 
-[odin]
-format = '\[[$symbol($version )]($style)\]'
-
 [opa]
 format = '\[[$symbol($version)]($style)\]'
-
-[openstack]
-format = '\[[$symbol$cloud(\($project\))]($style)\]'
 
 [os]
 format = '\[[$symbol]($style)\]'
@@ -193,18 +160,6 @@ format = '\[[$symbol$version]($style)\]'
 format = '\[[$symbol($version)]($style)\]'
 
 [php]
-format = '\[[$symbol($version)]($style)\]'
-
-[pijul_channel]
-format = '\[[$symbol$channel]($style)\]'
-
-[pixi]
-format = '\[[$symbol$version( $environment)]($style)\]'
-
-[pulumi]
-format = '\[[$symbol$stack]($style)\]'
-
-[purescript]
 format = '\[[$symbol($version)]($style)\]'
 
 [python]
@@ -222,9 +177,6 @@ format = '\[[$symbol($version)]($style)\]'
 [rlang]
 format = '\[[$symbol($version)]($style)\]'
 
-[ruby]
-format = '\[[$symbol($version)]($style)\]'
-
 [rust]
 format = '\[[$symbol($version)]($style)\]'
 
@@ -234,23 +186,11 @@ format = '\[[$symbol($version)]($style)\]'
 [shell]
 format = '\[[$indicator]($style)\]'
 
-[singularity]
-format = '\[[$symbol\[$env\]]($style)\]'
-
-[solidity]
-format = '\[[$symbol($version)]($style)\]'
-
-[spack]
-format = '\[[$symbol$environment]($style)\]'
-
 [status]
 format = '\[[$symbol$status]($style)\]'
 
 [sudo]
 format = '\[[as $symbol]($style)\]'
-
-[swift]
-format = '\[[$symbol($version)]($style)\]'
 
 [terraform]
 format = '\[[$symbol$workspace]($style)\]'
@@ -258,23 +198,12 @@ format = '\[[$symbol$workspace]($style)\]'
 [time]
 format = '\[[$time]($style)\]'
 
-[typst]
-format = '\[[$symbol($version)]($style)\]'
-
 [username]
 format = '\[[$user]($style)\]'
 
-[vagrant]
-format = '\[[$symbol($version)]($style)\]'
-
-[vcsh]
-format = '\[vcsh [$symbol$repo]($style)\]'
-
-[vlang]
-format = '\[[$symbol($version)]($style)\]'
-
-[xmake]
-format = '\[[$symbol($version)]($style)\]'
-
-[zig]
-format = '\[[$symbol($version)]($style)\]'
+[custom.ollama]
+command = "ollama ps | awk 'NR>1{print $1; exit}'"
+when = "ollama ps | awk 'NR>1{found=1} END{exit !found}'"
+format = "🦙 [$output]($style) "
+style = "bold cyan"
+disabled = false
