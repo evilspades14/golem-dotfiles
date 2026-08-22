@@ -1,7 +1,7 @@
 general:
   # Commands to run when the WM has started (e.g. to run a script or launch
   # another application). Here we are running a batch script to start Zebar.
-  startup_commands: ["shell-exec C:/Users/Jackson/.glzr/auto_tile/.venv/Scripts/pythonw.exe C:/Users/Jackson/.glzr/auto_tile/main.py"]
+  startup_commands: ["shell-exec {{- .chezmoi.rawHomeDir -}}/.glzr/auto_tile/.venv/Scripts/pythonw.exe C:/Users/Jackson/.glzr/auto_tile/main.py"]
   # Whether to automatically focus windows underneath the cursor.
 
   focus_follows_cursor: false
@@ -116,10 +116,6 @@ window_rules:
         window_class: { regex: "HwndWrapper*" }
       - window_process: { regex: "Flow.Launcher*" }
       - window_process: { regex: "steamapps|SteamLibrary" }
-      - window_process: { regex: "Battlefield 6" }
-      - window_process: { regex: "data_model_manager_desktop" }
-      # - window_process: {regex: ".*Data.Model.Manager.*"}
-      # - window_process: {regex: "cargo.exe"}
   - commands: ["set-floating"]
     match:
       - window_process: { regex: "/WebView2/" }

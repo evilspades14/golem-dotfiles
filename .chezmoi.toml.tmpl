@@ -1,9 +1,12 @@
 {{- $graphicschoices := list "intel" "nvidia" "amd" -}}
 {{- $graphics := promptChoiceOnce . "graphics" "Select the graphics backend for this system." $graphicschoices "nvidia" -}}
 
+{{- $displayConfigChoices := list "1080" "1440" "2k" "4k" -}}
+{{- $displayConfig := promptChoiceOnce . "displayConfig" "Select the screen resolution for sizing" $displayConfigChoices "1080" -}}
 
 [data]
     graphics = {{- $graphics | quote }}
+    terminalFontSize = {{- $displayConfig | quote }}
 
 [git]
     autoCommit = true
