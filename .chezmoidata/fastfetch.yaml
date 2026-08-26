@@ -1,0 +1,7 @@
+{{- $logoWidth := 50 -}}
+{{- if eq .displayConfig "1080" -}}
+    {{- $logoWidth = 30 -}}
+{{- else if eq .displayConfig "1440" -}}
+    {{- $logoWidth = 40 -}}
+{{- end -}}
+logoWidth: {{ .logoWidth }}
