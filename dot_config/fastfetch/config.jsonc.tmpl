@@ -33,7 +33,7 @@
     "type": "auto",
     "source": "~/.config/fastfetch/images/*.png",
     "preserveAspectRatio": true,
-    "width": {{ .logoWidth }}
+    "width": {{ .fastfetch.logoWidth }}
   }
   {{- end }}
   {{- if eq .chezmoi.os "windows" }}
