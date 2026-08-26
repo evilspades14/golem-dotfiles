@@ -1,6 +1,6 @@
-{{- if eq $chezmoi.displayConfig "1080" -}}
+{{- if eq .displayConfig "1080" -}}
     {{- $width := 30 -}}
-{{- else if eq $selected "1440" -}}
+{{- else if eq .displayConfig "1440" -}}
     {{- $width := 40 -}}
 {{- else -}}
     {{- $width := 50 -}}
