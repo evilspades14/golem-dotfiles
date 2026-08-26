@@ -4,14 +4,6 @@
 {{- $displayConfigChoices := list "1080" "1440" "2k" "4k" -}}
 {{- $displayConfig := promptChoiceOnce . "displayConfig" "Select the screen resolution for sizing" $displayConfigChoices "1080" -}}
 
-[data]
-    graphics = {{- $graphics | quote }}
-    displayConfig = {{- $displayConfig | quote }}
-
-[git]
-    autoCommit = true
-    autoPush = true
-
 {{- $logoWidth := 50 -}}
 {{- if eq .displayConfig "1080" -}}
     {{- $logoWidth = 30 -}}
@@ -19,5 +11,13 @@
     {{- $logoWidth = 40 -}}
 {{- end -}}
 
-[fastfetch]
+[data]
+    graphics = {{- $graphics | quote }}
+    displayConfig = {{- $displayConfig | quote }}
+
+[data.fastfetch]
     logoWidth = {{ $logoWidth }}
+
+[git]
+    autoCommit = true
+    autoPush = true
