@@ -1,11 +1,3 @@
-{{- if eq .displayConfig "1080" -}}
-    {{- $width := 30 -}}
-{{- else if eq .displayConfig "1440" -}}
-    {{- $width := 40 -}}
-{{- else -}}
-    {{- $width := 50 -}}
-{{- end -}}
-
 {
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json",
   "modules": [
@@ -41,7 +33,7 @@
     "type": "auto",
     "source": "~/.config/fastfetch/images/*.png",
     "preserveAspectRatio": true,
-    "width": {{ .width }}
+    "width": {{ .fastfetch.logoWidth }}
   }
   {{- end }}
   {{- if eq .chezmoi.os "windows" }}
