@@ -41,7 +41,7 @@
     "type": "auto",
     "source": "~/.config/fastfetch/images/*.png",
     "preserveAspectRatio": true,
-    "width": {{- $width -}}
+    "width": {{ .width }}
   }
   {{- end }}
   {{- if eq .chezmoi.os "windows" }}
