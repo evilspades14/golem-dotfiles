@@ -21,7 +21,7 @@
     stripComponents = 1
 # [".oh-my-zsh/custom/plugins/ssh-agent"]
 #     type = "archive"
-#     url = "https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/ssh-agent"
+#     url = "https://github.com/<owner>/<repo>/archive/<ref>.tar.gz"
 #     refreshPeriod = "168h"
 #     stripComponents = 1
 [".pi/agent/git/github.com/cgxeiji/pi-emote"]
