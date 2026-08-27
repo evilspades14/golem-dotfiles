@@ -19,6 +19,11 @@
     url = "https://github.com/zsh-users/zsh-autosuggestions/archive/master.tar.gz"
     refreshPeriod = "168h"
     stripComponents = 1
+# [".oh-my-zsh/custom/plugins/ssh-agent"]
+#     type = "archive"
+#     url = "https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/ssh-agent"
+#     refreshPeriod = "168h"
+#     stripComponents = 1
 [".pi/agent/git/github.com/cgxeiji/pi-emote"]
     type = "archive"
     url = "https://github.com/cgxeiji/pi-emote/archive/master.tar.gz"
