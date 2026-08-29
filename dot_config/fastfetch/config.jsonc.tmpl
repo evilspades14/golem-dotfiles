@@ -19,7 +19,10 @@
     "terminal",
     "terminalfont",
     "cpu",
-    "gpu",
+    {
+        "type": "gpu",
+        "format": "{2} [{6}]"
+    },
     "memory",
     "disk",
     "localip",
@@ -28,12 +31,17 @@
     "break",
     "colors"
   ],
+  "display": {
+    "percent": {
+    "type": ["bar"]
+    }
+  },
   {{- if eq .chezmoi.os "linux" }}
   "logo": {
     "type": "auto",
     "source": "~/.config/fastfetch/images/*.png",
     "preserveAspectRatio": true,
-    "width": 50
+    "width": {{ .fastfetch.logoWidth }}
   }
   {{- end }}
   {{- if eq .chezmoi.os "windows" }}

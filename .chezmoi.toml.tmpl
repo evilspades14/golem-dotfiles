@@ -4,9 +4,20 @@
 {{- $displayConfigChoices := list "1080" "1440" "2k" "4k" -}}
 {{- $displayConfig := promptChoiceOnce . "displayConfig" "Select the screen resolution for sizing" $displayConfigChoices "1080" -}}
 
+{{- $logoWidth := 50 -}}
+{{- if eq .displayConfig "1080" -}}
+    {{- $logoWidth = 30 -}}
+{{- else if eq .displayConfig "1440" -}}
+    {{- $logoWidth = 40 -}}
+{{- end -}}
+
 [data]
     graphics = {{- $graphics | quote }}
-    terminalFontSize = {{- $displayConfig | quote }}
+    displayConfig = {{- $displayConfig | quote }}
+    ssh_identities = ["id_ed25519"]
+
+[data.fastfetch]
+    logoWidth = {{- $logoWidth }}
 
 [git]
     autoCommit = true
