@@ -5,9 +5,9 @@
 {{- $displayConfig := promptChoiceOnce . "displayConfig" "Select the screen resolution for sizing" $displayConfigChoices "1080" -}}
 
 {{- $logoWidth := 50 -}}
-{{- if eq .displayConfig "1080" -}}
+{{- if eq $displayConfig "1080" -}}
     {{- $logoWidth = 30 -}}
-{{- else if eq .displayConfig "1440" -}}
+{{- else if eq $displayConfig "1440" -}}
     {{- $logoWidth = 40 -}}
 {{- end -}}
 
