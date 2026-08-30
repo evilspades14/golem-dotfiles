@@ -1,13 +1,15 @@
 {{ if ne .chezmoi.os "linux" }}
-run_onchange_before_10-install-packages-arch.sh
 .zshrc
 .zprofile
-.config/caelestia
 .config/remmina
 .config/kitty
 .config/ghostty
+{{ if ne .chezmoi.osRelease.id "arch" }}
+run_onchange_before_10-install-packages-arch.sh
+.config/caelestia
 .config/hypr
 10-install-packages-arch.sh
+{{ end }}
 {{ end }}
 
 {{ if ne .chezmoi.os "windows" }}
