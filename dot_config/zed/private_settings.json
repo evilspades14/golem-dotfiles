@@ -28,6 +28,6 @@
   "theme": {
     "mode": "system",
     "light": "Gruvbox Light",
-    "dark": "Ayu Dark",
-  },
+    "dark": "Ayu Dark"
+  }
 }
