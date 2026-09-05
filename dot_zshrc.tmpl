@@ -42,7 +42,7 @@ done
 # Run Fastfetch only in interactive shells
 if [[ -o interactive ]]; then
   fastfetch --logo-type kitty-direct
-else if [[ -n $SSH_TTY ]]; then
+elif [[ -n $SSH_TTY ]]; then
   fastfetch
 fi
 
