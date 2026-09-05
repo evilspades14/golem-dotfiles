@@ -28,7 +28,8 @@ hl.bind(mainMod .. " + " .. "Q", hl.dsp.exec_cmd("kitty"))
 
 hl.bind(mainMod .. " + " .. "C", hl.dsp.window.close())
 
-hl.bind(mainMod .. " + " .. "M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch exit"))
+hl.bind(mainMod .. " + " .. "M",
+    hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch exit"))
 
 hl.bind(mainMod .. " + " .. "E", hl.dsp.exec_cmd("thunar"))
 
@@ -40,7 +41,7 @@ hl.bind(mainMod .. " + " .. "P", hl.dsp.window.pseudo())
 
 -- dwindle
 
--- bind = $mainMod, J, togglesplit, # dwindle
+hl.bind(mainMod .. " + " .. "J", hl.dsp.layout("togglesplit"))
 
 hl.bind(mainMod .. " + " .. "D", hl.dsp.global("caelestia:launcher"))
 
