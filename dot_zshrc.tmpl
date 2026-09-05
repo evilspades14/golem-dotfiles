@@ -43,7 +43,7 @@ done
 if [[ -o interactive ]]; then
   fastfetch --logo-type kitty-direct
 elif [[ -n $SSH_TTY ]]; then
-  fastfetch
+  fastfetch --file ~/.config/fastfetch/c-c.txt
 fi
 
 eval "$(starship init zsh)"
