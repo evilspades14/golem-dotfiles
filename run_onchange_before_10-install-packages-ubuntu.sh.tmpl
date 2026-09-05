@@ -1,0 +1,9 @@
+{{ if or (eq .chezmoi.osRelease.id "ubuntu") (eq .chezmoi.osRelease.id "raspbian") }}
+#!/bin/bash
+set -eufo pipefail
+sudo apt-get update
+sudo apt-get install -y \
+{{ range .packages.debian.apt -}}
+  {{ . | quote }} \
+{{ end }}
+{{ end -}}

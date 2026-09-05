@@ -12,9 +12,12 @@ packages:
       - eza
       - gnome-keyring
       - hyprland
-      - spicetify-bin
-      - spotify
       - ttf-firacode-nerd
       - uv
       - yazi
       - zed
+  debian:
+    apt:
+      - uv
+      - yazi
+      - btop
