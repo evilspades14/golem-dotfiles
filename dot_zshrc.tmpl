@@ -20,11 +20,13 @@ setopt HIST_FIND_NO_DUPS
 setopt HIST_SAVE_NO_DUPS
 setopt HIST_REDUCE_BLANKS
 
-plugins=(git chezmoi ssh-agent aws zsh-completions zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(git chezmoi ssh-agent keychain gpg-agent aws zsh-completions zsh-autosuggestions zsh-syntax-highlighting)
 
 zstyle :omz:plugins:ssh-agent agent-forwarding on
 zstyle :omz:plugins:ssh-agent identities {{ .ssh_identities | join " " }}
 zstyle :omz:plugins:ssh-agent lazy yes
+zstyle :omz:plugins:keychain agents gpg,ssh
+zstyle :omz:plugins:keychain identities {{ .ssh_identities | join " " }}
 
 source $ZSH/oh-my-zsh.sh
 
