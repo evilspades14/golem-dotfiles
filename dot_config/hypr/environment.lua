@@ -12,9 +12,8 @@
 
 hl.env("XCURSOR_SIZE", 24)
 hl.env("HYPRCURSOR_SIZE", 24)
-hl.env("GTK_THEME", "Qogir-Dark")
-hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
-hl.env("QT_QPA_PLATFORM", "wayland")
+-- hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
+-- hl.env("QT_QPA_PLATFORM", "wayland")
 
 hl.config({
   xwayland = {
