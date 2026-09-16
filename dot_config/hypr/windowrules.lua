@@ -246,6 +246,22 @@ hl.window_rule({
 })
 
 hl.window_rule({
+  match = { class = "^(steam_app_\\d+)$" },
+  fullscreen = true,
+})
+
+hl.window_rule({
+  match = { class = "^(steam_app_.*$)" },
+  opacity = "1.0 override",
+})
+
+hl.window_rule({
+  match = { class = "Steam" },
+  float = false,
+  maximize = false,
+})
+
+hl.window_rule({
     name  = "opacity_0_70____0_70",
     match = {
         class = "^([Ss]potify)$",
