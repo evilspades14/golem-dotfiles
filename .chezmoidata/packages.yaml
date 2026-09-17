@@ -6,6 +6,7 @@ packages:
       - hyprshutdown
       - kitty
       - starship
+      - jq 
       - zsh
     aur:
       - caelestia-shell-git
