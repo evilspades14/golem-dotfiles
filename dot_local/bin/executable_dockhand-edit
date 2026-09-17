@@ -15,7 +15,6 @@
 #   DOCKHAND_URL       e.g. https://dockhand.example.com
 #   DOCKHAND_USER      Authelia service account username
 #   DOCKHAND_PASSWORD  Authelia service account password
-#   DOCKHAND_ENV       environment id (optional, only if you have multiple)
 
 set -euo pipefail
 
@@ -27,17 +26,25 @@ PROG="$(basename "$0")"
 usage() {
   cat >&2 <<EOF
 Usage:
-  ${PROG} container <container_id>  <path/in/container>
-  ${PROG} volume    <volume_name>   <path/in/volume>
+  ${PROG} container <container_id>  <path/in/container>  [--env ENV_ID]
+  ${PROG} volume    <volume_name>   <path/in/volume>     [--env ENV_ID]
 
 Arguments:
   MODE      Required. Must be exactly 'container' or 'volume'.
   TARGET    Required. Container ID (container mode) or volume name (volume mode).
   PATH      Required. Absolute path to the file inside the container/volume.
 
+Options:
+  --env ENV_ID   Dockhand environment id. Required if your Dockhand
+                 instance manages more than one environment; otherwise
+                 omit it to use the default. Can appear anywhere in the
+                 argument list.
+  -h, --help     Show this help and exit.
+
 Examples:
   ${PROG} container a1b2c3d4  /app/config.json
-  ${PROG} volume    my_data   /data/settings.yaml
+  ${PROG} container a1b2c3d4  /app/config.json  --env prod
+  ${PROG} volume    my_data   /data/settings.yaml --env staging
 
 Required environment variables:
   DOCKHAND_URL       e.g. https://dockhand.example.com
@@ -45,10 +52,56 @@ Required environment variables:
   DOCKHAND_PASSWORD  Authelia service account password
 
 Optional environment variables:
-  DOCKHAND_ENV       environment id, only needed if you have multiple
   EDITOR             defaults to 'vi'
 EOF
 }
+
+# Scan all args for --env / -h / --help first, order-independent, so
+# `--env prod` can appear before, after, or between the positional args.
+# Whatever's left over becomes the positional list.
+POSITIONAL=()
+ENV_ID=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    --env)
+      if [[ $# -lt 2 || "$2" == -* ]]; then
+        echo "Error: --env requires a value." >&2
+        usage
+        exit 2
+      fi
+      ENV_ID="$2"
+      shift 2
+      ;;
+    --env=*)
+      ENV_ID="${1#--env=}"
+      if [[ -z "$ENV_ID" ]]; then
+        echo "Error: --env requires a value." >&2
+        usage
+        exit 2
+      fi
+      shift
+      ;;
+    --)
+      shift
+      POSITIONAL+=("$@")
+      break
+      ;;
+    -*)
+      echo "Error: unknown option '$1'." >&2
+      usage
+      exit 2
+      ;;
+    *)
+      POSITIONAL+=("$1")
+      shift
+      ;;
+  esac
+done
+set -- "${POSITIONAL[@]}"
 
 # Validate argument *count* first, with a specific message per failure mode,
 # rather than letting bash's generic "unbound variable" error fire — that
@@ -68,13 +121,13 @@ if [[ "$MODE" != "container" && "$MODE" != "volume" ]]; then
 fi
 
 if [[ $# -lt 3 ]]; then
-  echo "Error: '${MODE}' mode requires 3 arguments, got $#." >&2
+  echo "Error: '${MODE}' mode requires 3 positional arguments, got $#." >&2
   usage
   exit 2
 fi
 
 if [[ $# -gt 3 ]]; then
-  echo "Error: too many arguments (expected 3, got $#)." >&2
+  echo "Error: too many positional arguments (expected 3, got $#: ${*})." >&2
   usage
   exit 2
 fi
@@ -98,8 +151,8 @@ fi
 DOCKHAND_URL="${DOCKHAND_URL%/}"
 
 ENV_QS=""
-if [[ -n "${DOCKHAND_ENV:-}" ]]; then
-  ENV_QS="&env=${DOCKHAND_ENV}"
+if [[ -n "$ENV_ID" ]]; then
+  ENV_QS="&env=$(jq -rn --arg s "$ENV_ID" '$s|@uri')"
 fi
 
 curl_json() {
