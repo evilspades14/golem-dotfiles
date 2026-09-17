@@ -147,8 +147,12 @@ if [[ ${#missing_env[@]} -gt 0 ]]; then
   exit 2
 fi
 
-# Strip any trailing slash so URL-building below never produces "//api/...".
-DOCKHAND_URL="${DOCKHAND_URL%/}"
+# Strip any trailing slash(es) so URL-building below never produces
+# "//api/..." — a loop rather than a single ${VAR%/} in case the value
+# has more than one (e.g. a URL field with a stray double slash).
+while [[ "$DOCKHAND_URL" == */ ]]; do
+  DOCKHAND_URL="${DOCKHAND_URL%/}"
+done
 
 ENV_QS=""
 if [[ -n "$ENV_ID" ]]; then
@@ -157,6 +161,25 @@ fi
 
 curl_json() {
   curl -sS -u "${DOCKHAND_USER}:${DOCKHAND_PASSWORD}" "$@"
+}
+
+# Performs a GET and separates the HTTP status from the body so failures
+# (auth, 404, etc.) get a clear message instead of feeding an error page
+# or empty body into jq and getting a cryptic parse error.
+# On success, prints the raw response body to stdout.
+http_get() {
+  local url="$1"
+  local raw status body
+  raw="$(curl -sS -u "${DOCKHAND_USER}:${DOCKHAND_PASSWORD}" -w '\n%{http_code}' "$url")"
+  status="${raw##*$'\n'}"
+  body="${raw%$'\n'*}"
+  if [[ ! "$status" =~ ^2 ]]; then
+    echo "Error: GET ${url} failed with HTTP ${status}" >&2
+    echo "Response body:" >&2
+    echo "$body" >&2
+    exit 1
+  fi
+  printf '%s' "$body"
 }
 
 # Pure bash/jq URL-encoding, avoids a python3 dependency.
@@ -175,9 +198,12 @@ case "$MODE" in
     # Trigger the volume browse first so a helper container exists,
     # and grab its id so we can write through the container endpoint.
     BROWSE_URL="${DOCKHAND_URL}/api/volumes/${VOLUME_NAME}/browse?path=$(urlencode "$(dirname "$FPATH")")${ENV_QS}"
-    HELPER_ID="$(curl_json "$BROWSE_URL" | jq -r '.helperId')"
-    if [[ -z "$HELPER_ID" || "$HELPER_ID" == "null" ]]; then
-      echo "Could not resolve helper container for volume ${VOLUME_NAME}" >&2
+    BROWSE_BODY="$(http_get "$BROWSE_URL")"
+    HELPER_ID="$(printf '%s' "$BROWSE_BODY" | jq -r '.helperId // empty')"
+    if [[ -z "$HELPER_ID" ]]; then
+      echo "Error: could not find .helperId in the volume browse response." >&2
+      echo "Response body:" >&2
+      echo "$BROWSE_BODY" >&2
       exit 1
     fi
     ENC_PATH="$(urlencode "$FPATH")"
@@ -190,7 +216,19 @@ TMP="$(mktemp --suffix="-$(basename "$FPATH")")"
 trap 'rm -f "$TMP"' EXIT
 
 echo "Fetching ${FPATH} ..."
-curl_json "$READ_URL" | jq -r '.content' > "$TMP"
+READ_BODY="$(http_get "$READ_URL")"
+
+# Dockhand's own docs say the file-content endpoint returns
+# {"content": "...", "path": "..."}, but note their docs are
+# AI-generated and may not match a given instance/version exactly.
+# Try that shape first; if the body isn't JSON with a .content field
+# (e.g. this endpoint streams the raw file instead), fall back to
+# treating the whole response body as the file content itself.
+if CONTENT="$(printf '%s' "$READ_BODY" | jq -er '.content' 2>/dev/null)"; then
+  printf '%s' "$CONTENT" > "$TMP"
+else
+  printf '%s' "$READ_BODY" > "$TMP"
+fi
 
 CHECKSUM_BEFORE="$(sha256sum "$TMP" | awk '{print $1}')"
 
@@ -206,10 +244,24 @@ fi
 echo "Writing changes back to ${FPATH} ..."
 CONTENT_JSON="$(jq -Rs '{content: .}' < "$TMP")"
 
-curl -sS -X PUT \
+WRITE_RAW="$(curl -sS -X PUT \
   -u "${DOCKHAND_USER}:${DOCKHAND_PASSWORD}" \
   -H "Content-Type: application/json" \
   -d "$CONTENT_JSON" \
-  "$WRITE_URL" | jq .
+  -w '\n%{http_code}' \
+  "$WRITE_URL")"
+WRITE_STATUS="${WRITE_RAW##*$'\n'}"
+WRITE_BODY="${WRITE_RAW%$'\n'*}"
+
+if [[ ! "$WRITE_STATUS" =~ ^2 ]]; then
+  echo "Error: PUT ${WRITE_URL} failed with HTTP ${WRITE_STATUS}" >&2
+  echo "Response body:" >&2
+  echo "$WRITE_BODY" >&2
+  echo "Your local edits are preserved at: ${TMP}" >&2
+  trap - EXIT   # keep the temp file around so nothing is lost
+  exit 1
+fi
+
+printf '%s\n' "$WRITE_BODY" | jq . 2>/dev/null || printf '%s\n' "$WRITE_BODY"
 
 echo "Done."
