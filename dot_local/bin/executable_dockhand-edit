@@ -1,327 +1,527 @@
-#!/usr/bin/env bash
-#
-# dockhand-edit — edit a file inside a Dockhand-managed container or
-# volume using your local $EDITOR instead of the web GUI.
-#
-# Requires: curl, jq
-#
-# Auth: Dockhand is assumed to sit behind Authelia ForwardAuth. Rather than
-# scraping a browser session cookie (short-lived, single-login), this uses
-# a dedicated Authelia service account over HTTP Basic Auth, per Authelia's
-# own guide for scripted access:
-# https://www.authelia.com/integration/guides/securing-apps-with-basic-auth/
-#
-# Config (env vars):
-#   DOCKHAND_URL       e.g. https://dockhand.example.com
-#   DOCKHAND_USER      Authelia service account username
-#   DOCKHAND_PASSWORD  Authelia service account password
+#!/usr/bin/env python3
+"""dockhand-edit — edit a file inside a Dockhand-managed container or volume
+using your local $EDITOR instead of the web GUI.
 
-set -euo pipefail
+Auth: Dockhand is assumed to sit behind Authelia ForwardAuth. Rather than
+scraping a browser session cookie (short-lived, single-login), this uses a
+dedicated Authelia service account over HTTP Basic Auth, per Authelia's own
+guide for scripted access:
+https://www.authelia.com/integration/guides/securing-apps-with-basic-auth/
 
-# $0 reflects whatever name the script was invoked as (dockhand-edit,
-# dockhand-edit.sh, a symlink name, etc.), so usage text always matches
-# reality instead of a hardcoded filename.
-PROG="$(basename "$0")"
+Config (env vars):
+    DOCKHAND_URL          e.g. https://dockhand.example.com
+    DOCKHAND_USER         Authelia service account username
+    DOCKHAND_PASSWORD     Authelia service account password
+    EDITOR                defaults to 'vi'
+    DOCKHAND_EDITOR_MODE  'gui' or 'terminal', see edit_file() below
 
-usage() {
-  cat >&2 <<EOF
-Usage:
-  ${PROG} container <container_id>  <path/in/container>  [--env ENV_ID]
-  ${PROG} volume    <volume_name>   <path/in/volume>     [--env ENV_ID]
+Standard library only — no pip install needed on any machine this gets
+chezmoi-synced to. Swap DockhandClient._request for `requests` if you want
+nicer ergonomics later; everything else is decoupled from that choice.
+"""
 
-Arguments:
-  MODE      Required. Must be exactly 'container' or 'volume'.
-  TARGET    Required. Container ID (container mode) or volume name (volume mode).
-  PATH      Required. Absolute path to the file inside the container/volume.
+from __future__ import annotations
 
-Options:
-  --env ENV_ID   Dockhand environment id. Required if your Dockhand
-                 instance manages more than one environment; otherwise
-                 omit it to use the default. Can appear anywhere in the
-                 argument list.
-  -h, --help     Show this help and exit.
-
-Examples:
-  ${PROG} container a1b2c3d4  /app/config.json
-  ${PROG} container a1b2c3d4  /app/config.json  --env prod
-  ${PROG} volume    my_data   /data/settings.yaml --env staging
-
-Required environment variables:
-  DOCKHAND_URL       e.g. https://dockhand.example.com
-  DOCKHAND_USER      Authelia service account username
-  DOCKHAND_PASSWORD  Authelia service account password
-
-Optional environment variables:
-  EDITOR              defaults to 'vi'
-  DOCKHAND_EDITOR_MODE  'gui' or 'terminal', overrides auto-detection of
-                        whether to wait for a manual confirmation (needed
-                        for GUI editors like zed/code whose --wait can be
-                        unreliable) or block on the editor process (normal
-                        for terminal editors like vim/nano)
-EOF
-}
-
-# Scan all args for --env / -h / --help first, order-independent, so
-# `--env prod` can appear before, after, or between the positional args.
-# Whatever's left over becomes the positional list.
-POSITIONAL=()
-ENV_ID=""
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    -h|--help)
-      usage
-      exit 0
-      ;;
-    --env)
-      if [[ $# -lt 2 || "$2" == -* ]]; then
-        echo "Error: --env requires a value." >&2
-        usage
-        exit 2
-      fi
-      ENV_ID="$2"
-      shift 2
-      ;;
-    --env=*)
-      ENV_ID="${1#--env=}"
-      if [[ -z "$ENV_ID" ]]; then
-        echo "Error: --env requires a value." >&2
-        usage
-        exit 2
-      fi
-      shift
-      ;;
-    --)
-      shift
-      POSITIONAL+=("$@")
-      break
-      ;;
-    -*)
-      echo "Error: unknown option '$1'." >&2
-      usage
-      exit 2
-      ;;
-    *)
-      POSITIONAL+=("$1")
-      shift
-      ;;
-  esac
-done
-set -- "${POSITIONAL[@]}"
-
-# Validate argument *count* first, with a specific message per failure mode,
-# rather than letting bash's generic "unbound variable" error fire — that
-# error doesn't say which argument was missing or what the expected shape is.
-if [[ $# -eq 0 ]]; then
-  echo "Error: no arguments given." >&2
-  usage
-  exit 2
-fi
-
-MODE="$1"
-
-if [[ "$MODE" != "container" && "$MODE" != "volume" ]]; then
-  echo "Error: invalid mode '${MODE}' (must be 'container' or 'volume')." >&2
-  usage
-  exit 2
-fi
-
-if [[ $# -lt 3 ]]; then
-  echo "Error: '${MODE}' mode requires 3 positional arguments, got $#." >&2
-  usage
-  exit 2
-fi
-
-if [[ $# -gt 3 ]]; then
-  echo "Error: too many positional arguments (expected 3, got $#: ${*})." >&2
-  usage
-  exit 2
-fi
-
-TARGET="$2"
-FPATH="$3"
-EDITOR="${EDITOR:-vi}"
-
-missing_env=()
-[[ -z "${DOCKHAND_URL:-}" ]] && missing_env+=("DOCKHAND_URL")
-[[ -z "${DOCKHAND_USER:-}" ]] && missing_env+=("DOCKHAND_USER")
-[[ -z "${DOCKHAND_PASSWORD:-}" ]] && missing_env+=("DOCKHAND_PASSWORD")
-
-if [[ ${#missing_env[@]} -gt 0 ]]; then
-  echo "Error: missing required environment variable(s): ${missing_env[*]}" >&2
-  usage
-  exit 2
-fi
-
-# Defensive: strip any trailing CR/LF that a secrets backend or template
-# might leave on a value (e.g. a CLI tool's stdout retaining its newline
-# when substituted verbatim into a template rather than via command
-# substitution). A stray newline in a Basic Auth username/password fails
-# with a confusing 401 rather than an obvious parse error, so it's worth
-# guarding here even though the real fix belongs in the secrets pipeline.
-DOCKHAND_URL="${DOCKHAND_URL%$'\r'}"; DOCKHAND_URL="${DOCKHAND_URL%$'\n'}"
-DOCKHAND_USER="${DOCKHAND_USER%$'\r'}"; DOCKHAND_USER="${DOCKHAND_USER%$'\n'}"
-DOCKHAND_PASSWORD="${DOCKHAND_PASSWORD%$'\r'}"; DOCKHAND_PASSWORD="${DOCKHAND_PASSWORD%$'\n'}"
-
-# Strip any trailing slash(es) so URL-building below never produces
-# "//api/..." — a loop rather than a single ${VAR%/} in case the value
-# has more than one (e.g. a URL field with a stray double slash).
-while [[ "$DOCKHAND_URL" == */ ]]; do
-  DOCKHAND_URL="${DOCKHAND_URL%/}"
-done
-
-ENV_QS=""
-if [[ -n "$ENV_ID" ]]; then
-  ENV_QS="&env=$(jq -rn --arg s "$ENV_ID" '$s|@uri')"
-fi
-
-curl_json() {
-  curl -sS -u "${DOCKHAND_USER}:${DOCKHAND_PASSWORD}" "$@"
-}
-
-# Performs a GET and separates the HTTP status from the body so failures
-# (auth, 404, etc.) get a clear message instead of feeding an error page
-# or empty body into jq and getting a cryptic parse error.
-# On success, prints the raw response body to stdout.
-http_get() {
-  local url="$1"
-  local raw status body
-  raw="$(curl -sS -u "${DOCKHAND_USER}:${DOCKHAND_PASSWORD}" -w '\n%{http_code}' "$url")"
-  status="${raw##*$'\n'}"
-  body="${raw%$'\n'*}"
-  if [[ ! "$status" =~ ^2 ]]; then
-    echo "Error: GET ${url} failed with HTTP ${status}" >&2
-    echo "Response body:" >&2
-    echo "$body" >&2
-    exit 1
-  fi
-  printf '%s' "$body"
-}
-
-# Pure bash/jq URL-encoding, avoids a python3 dependency.
-urlencode() {
-  jq -rn --arg s "$1" '$s|@uri'
-}
-
-case "$MODE" in
-  container)
-    CONTAINER_ID="$TARGET"
-    READ_URL="${DOCKHAND_URL}/api/containers/${CONTAINER_ID}/files/content?path=$(urlencode "$FPATH")${ENV_QS}"
-    WRITE_URL="$READ_URL"
-    ;;
-  volume)
-    VOLUME_NAME="$TARGET"
-    # Trigger the volume browse first so a helper container exists,
-    # and grab its id so we can write through the container endpoint.
-    BROWSE_URL="${DOCKHAND_URL}/api/volumes/${VOLUME_NAME}/browse?path=$(urlencode "$(dirname "$FPATH")")${ENV_QS}"
-    BROWSE_BODY="$(http_get "$BROWSE_URL")"
-    HELPER_ID="$(printf '%s' "$BROWSE_BODY" | jq -r '.helperId // empty')"
-    if [[ -z "$HELPER_ID" ]]; then
-      echo "Error: could not find .helperId in the volume browse response." >&2
-      echo "Response body:" >&2
-      echo "$BROWSE_BODY" >&2
-      exit 1
-    fi
-    ENC_PATH="$(urlencode "$FPATH")"
-    READ_URL="${DOCKHAND_URL}/api/volumes/${VOLUME_NAME}/browse/content?path=${ENC_PATH}${ENV_QS}"
-    WRITE_URL="${DOCKHAND_URL}/api/containers/${HELPER_ID}/files/content?path=${ENC_PATH}${ENV_QS}"
-    ;;
-esac
-
-TMP="$(mktemp --suffix="-$(basename "$FPATH")")"
-trap 'rm -f "$TMP"' EXIT
-
-echo "Fetching ${FPATH} ..."
-READ_BODY="$(http_get "$READ_URL")"
-
-# Dockhand's own docs say the file-content endpoint returns
-# {"content": "...", "path": "..."}, but note their docs are
-# AI-generated and may not match a given instance/version exactly.
-# Try that shape first; if the body isn't JSON with a .content field
-# (e.g. this endpoint streams the raw file instead), fall back to
-# treating the whole response body as the file content itself.
-if CONTENT="$(printf '%s' "$READ_BODY" | jq -er '.content' 2>/dev/null)"; then
-  printf '%s' "$CONTENT" > "$TMP"
-else
-  printf '%s' "$READ_BODY" > "$TMP"
-fi
-
-CHECKSUM_BEFORE="$(sha256sum "$TMP" | awk '{print $1}')"
-
-# EDITOR is often a command plus flags (e.g. "zeditor --wait", "code --wait"),
-# so it has to be split into an argv array rather than invoked as a single
-# quoted token — "$EDITOR" "$TMP" would otherwise look for a binary literally
-# named "zeditor --wait" and fail with "command not found".
-read -ra EDITOR_ARGV <<< "$EDITOR"
-if [[ ${#EDITOR_ARGV[@]} -eq 0 ]]; then
-  echo "Error: \$EDITOR is empty." >&2
-  exit 1
-fi
-if ! command -v "${EDITOR_ARGV[0]}" >/dev/null 2>&1; then
-  echo "Error: editor command '${EDITOR_ARGV[0]}' not found on \$PATH." >&2
-  echo "(EDITOR=\"${EDITOR}\")" >&2
-  exit 1
-fi
+import argparse
+import base64
+import hashlib
+import json
+import os
+import posixpath
+import re
+import shlex
+import shutil
+import subprocess
+import sys
+import tempfile
+import urllib.error
+import urllib.parse
+import urllib.request
+from collections.abc import Callable
+from pathlib import Path
+from pprint import pprint
 
 # GUI editors with a single-instance architecture (Zed, VS Code, Cursor,
 # Sublime, etc.) don't reliably block on their own --wait flag when an
 # instance is already running — Zed in particular has an open upstream bug
-# for exactly this (zed-industries/zed#54203). Rather than trust the process
-# exit to mean "done editing", launch these in the background and wait for
-# an explicit confirmation instead. Terminal editors (vim, nano, ...) still
-# run in the foreground and block naturally, which is more convenient when
-# it works. DOCKHAND_EDITOR_MODE=gui|terminal overrides the auto-detection.
-GUI_EDITORS=(code code-insiders cursor zed zeditor subl sublime_text atom gedit kate)
-EDITOR_BASENAME="$(basename "${EDITOR_ARGV[0]}")"
-EDITOR_MODE="${DOCKHAND_EDITOR_MODE:-}"
+# for exactly this (zed-industries/zed#54203). For these, we launch in the
+# background and wait for an explicit Enter instead of trusting the process
+# to block. Terminal editors (vim, nano, ...) run in the foreground and
+# block naturally.
+GUI_EDITORS = {
+    "code",
+    "code-insiders",
+    "cursor",
+    "zed",
+    "zeditor",
+    "subl",
+    "sublime_text",
+    "atom",
+    "gedit",
+    "kate",
+}
 
-if [[ -z "$EDITOR_MODE" ]]; then
-  EDITOR_MODE="terminal"
-  for g in "${GUI_EDITORS[@]}"; do
-    if [[ "$EDITOR_BASENAME" == "$g" ]]; then
-      EDITOR_MODE="gui"
-      break
-    fi
-  done
-fi
 
-if [[ "$EDITOR_MODE" == "gui" ]]; then
-  "${EDITOR_ARGV[@]}" "$TMP" >/dev/null 2>&1 &
-  disown
-  echo "Opened in ${EDITOR_BASENAME}. This editor's --wait can't be trusted to block"
-  echo "(especially if it was already running), so confirm manually instead."
-  read -rp "Press Enter here once you've saved and closed ${FPATH}: " _
-else
-  "${EDITOR_ARGV[@]}" "$TMP"
-fi
+class DockhandError(Exception):
+    """Raised for any expected failure (bad HTTP status, bad response shape,
+    missing config, editor problems). main() catches this at the top level
+    and turns it into a clean "Error: ..." message instead of a traceback.
+    """
 
-CHECKSUM_AFTER="$(sha256sum "$TMP" | awk '{print $1}')"
 
-if [[ "$CHECKSUM_BEFORE" == "$CHECKSUM_AFTER" ]]; then
-  echo "No changes made — not writing back."
-  exit 0
-fi
+# --------------------------------------------------------------------------
+# API client
+# --------------------------------------------------------------------------
 
-echo "Writing changes back to ${FPATH} ..."
-CONTENT_JSON="$(jq -Rs '{content: .}' < "$TMP")"
 
-WRITE_RAW="$(curl -sS -X PUT \
-  -u "${DOCKHAND_USER}:${DOCKHAND_PASSWORD}" \
-  -H "Content-Type: application/json" \
-  -d "$CONTENT_JSON" \
-  -w '\n%{http_code}' \
-  "$WRITE_URL")"
-WRITE_STATUS="${WRITE_RAW##*$'\n'}"
-WRITE_BODY="${WRITE_RAW%$'\n'*}"
+class DockhandClient:
+    """Thin wrapper around the handful of Dockhand file-browser endpoints
+    this tool uses. Add more methods here as you extend the script — e.g.
+    list_environments(), read-only browse of a directory, etc.
+    """
 
-if [[ ! "$WRITE_STATUS" =~ ^2 ]]; then
-  echo "Error: PUT ${WRITE_URL} failed with HTTP ${WRITE_STATUS}" >&2
-  echo "Response body:" >&2
-  echo "$WRITE_BODY" >&2
-  echo "Your local edits are preserved at: ${TMP}" >&2
-  trap - EXIT   # keep the temp file around so nothing is lost
-  exit 1
-fi
+    def __init__(
+        self, base_url: str, user: str, password: str, env_id: str | None = None
+    ):
+        self.base_url = base_url.rstrip("/")
+        self._auth_header = self._basic_auth_header(user, password)
+        self.env_id = env_id
 
-printf '%s\n' "$WRITE_BODY" | jq . 2>/dev/null || printf '%s\n' "$WRITE_BODY"
+    @staticmethod
+    def _basic_auth_header(user: str, password: str) -> str:
+        token = base64.b64encode(f"{user}:{password}".encode()).decode()
+        return f"Basic {token}"
 
-echo "Done."
+    def _request(
+        self,
+        method: str,
+        path: str,
+        params: dict[str, str] | None = None,
+        json_body: dict | None = None,
+    ) -> tuple[int, str, str]:
+        """Low-level request. Returns (status, body, full_url). Never raises
+        on a non-2xx status — that's the caller's job via get()/put_json(),
+        which know how to phrase a useful error for their specific endpoint.
+        """
+        all_params = dict(params or {})
+        if self.env_id:
+            all_params["env"] = self.env_id
+
+        url = f"{self.base_url}{path}"
+        if all_params:
+            url = f"{url}?{urllib.parse.urlencode(all_params)}"
+
+        headers = {"Authorization": self._auth_header}
+        data = None
+        if json_body is not None:
+            data = json.dumps(json_body).encode("utf-8")
+            headers["Content-Type"] = "application/json"
+
+        req = urllib.request.Request(url, data=data, headers=headers, method=method)
+        try:
+            with urllib.request.urlopen(req) as resp:
+                return resp.status, resp.read().decode("utf-8", errors="replace"), url
+        except urllib.error.HTTPError as e:
+            return e.code, e.read().decode("utf-8", errors="replace"), url
+        except urllib.error.URLError as e:
+            raise DockhandError(f"Could not reach {url}: {e.reason}") from e
+
+    def get(self, path: str, params: dict[str, str] | None = None) -> str:
+        status, body, url = self._request("GET", path, params=params)
+        if not (200 <= status < 300):
+            raise DockhandError(
+                f"GET {url} failed with HTTP {status}\nResponse body:\n{body}"
+            )
+        return body
+
+    def put_json(
+        self, path: str, json_body: dict, params: dict[str, str] | None = None
+    ) -> str:
+        status, body, url = self._request(
+            "PUT", path, params=params, json_body=json_body
+        )
+        if not (200 <= status < 300):
+            raise DockhandError(
+                f"PUT {url} failed with HTTP {status}\nResponse body:\n{body}"
+            )
+        return body
+
+    def read_container_file(self, container_id: str, path: str) -> str:
+        body = self.get(
+            f"/api/containers/{container_id}/files/content", params={"path": path}
+        )
+        return _extract_content(body)
+
+    def write_container_file(self, container_id: str, path: str, content: str) -> str:
+        return self.put_json(
+            f"/api/containers/{container_id}/files/content",
+            {"content": content},
+            params={"path": path},
+        )
+
+    def browse_volume_helper_id(self, volume_name: str, parent_dir: str) -> str:
+        body = self.get(
+            f"/api/volumes/{volume_name}/browse", params={"path": parent_dir}
+        )
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError as e:
+            raise DockhandError(
+                f"Volume browse response wasn't valid JSON:\n{body}"
+            ) from e
+        helper_id = data.get("helperId") if isinstance(data, dict) else None
+        if not helper_id:
+            raise DockhandError(f"No .helperId in volume browse response:\n{body}")
+        return helper_id
+
+    def read_volume_file(self, volume_name: str, path: str) -> str:
+        body = self.get(
+            f"/api/volumes/{volume_name}/browse/content", params={"path": path}
+        )
+        return _extract_content(body)
+
+    def list_environments(self) -> list[dict]:
+        body = self.get("/api/environments")
+        data = _expect_list(body, "Environment list")
+        return data
+
+    def list_containers(self) -> list[dict]:
+        # "all=true" so stopped containers resolve too, not just running ones.
+        body = self.get("/api/containers", params={"all": "true"})
+        data = _expect_list(body, "Container list")
+        return data
+
+    def list_volumes(self) -> list[dict]:
+        # "all=true" so stopped containers resolve too, not just running ones.
+        body = self.get("/api/volumes")
+        data = _expect_list(body, "Volume list")
+        return data
+
+
+def _extract_content(body: str) -> str:
+    """Dockhand's own docs say the file-content endpoints return
+    {"content": "...", "path": "..."}, but note their docs are AI-generated
+    and confirmed not to always match a given instance's actual behavior
+    (some versions stream the raw file instead). Try the wrapped shape
+    first; if the body isn't JSON with a .content field, fall back to
+    treating the whole response body as the file content itself.
+    """
+    try:
+        data = json.loads(body)
+    except json.JSONDecodeError:
+        return body
+    if isinstance(data, dict) and "content" in data:
+        return data["content"]
+    return body
+
+
+def _expect_list(body: str, what: str) -> list[dict]:
+    try:
+        data = json.loads(body)
+    except json.JSONDecodeError as e:
+        raise DockhandError(f"{what} response wasn't valid JSON:\n{body}") from e
+    if not isinstance(data, list):
+        raise DockhandError(f"{what} response wasn't a JSON array:\n{body}")
+    return data
+
+
+_ENV_ID_RE = re.compile(r"^\d+$")
+_CONTAINER_ID_RE = re.compile(r"^[0-9a-fA-F]{12,64}$")
+
+
+def resolve_environment_id(client: DockhandClient, env_arg: str | None) -> str | None:
+    """Accepts either a numeric environment id (passed straight through, no
+    API call — same zero-overhead behavior as before) or an environment
+    name (resolved via GET /api/environments). Returns None if env_arg is
+    None, matching the previous "no --env given" behavior.
+    """
+    if not env_arg:
+        return None
+    if _ENV_ID_RE.match(env_arg):
+        return env_arg
+
+    print(f"Resolving environment '{env_arg}' ...")
+    environments = client.list_environments()
+
+    for env in environments:
+        if str(env.get("name", "")) == env_arg:
+            return str(env["id"])
+    lowered = env_arg.lower()
+    for env in environments:
+        if str(env.get("name", "")).lower() == lowered:
+            return str(env["id"])
+
+    available = ", ".join(str(e.get("name")) for e in environments) or "(none)"
+    raise DockhandError(
+        f"No environment named '{env_arg}' found. Available: {available}"
+    )
+
+
+def resolve_container_id(client: DockhandClient, target: str) -> str:
+    """Accepts either a container id/short-id (passed straight through, no
+    API call) or a container name (resolved via GET /api/containers, scoped
+    to whatever environment is already set on the client).
+    """
+    if _CONTAINER_ID_RE.match(target):
+        return target
+
+    print(f"Resolving container '{target}' ...")
+    containers = client.list_containers()
+
+    for c in containers:
+        if str(c.get("name", "")) == target:
+            return str(c["id"])
+    lowered = target.lower()
+    for c in containers:
+        if str(c.get("name", "")).lower() == lowered:
+            return str(c["id"])
+    # Fall back to id/short-id prefix match, in case something that looked
+    # name-like (e.g. mixed case, short) was actually a partial id.
+    for c in containers:
+        cid = str(c.get("id", ""))
+        if cid == target or cid.startswith(target):
+            return cid
+
+    available = ", ".join(str(c.get("name")) for c in containers) or "(none)"
+    raise DockhandError(
+        f"No container named or matching id '{target}' found. Available: {available}"
+    )
+
+
+def list_environments(client: DockhandClient) -> list[dict]:
+    environments = client.list_environments()
+    data = [{"id": str(e["id"]), "name": str(e.get("name"))} for e in environments]
+    return data
+
+def list_volumes(client: DockhandClient) -> list[dict]:
+    if not client.env_id:
+        raise DockhandError("No environment selected. Specify an environment with `--env`")
+    volumes = client.list_volumes()
+    return volumes
+    
+def list_containers(client: DockhandClient) -> list[dict]:
+    if not client.env_id:
+        raise DockhandError("No environment selected. Specify an environment with `--env`")
+    containers = client.list_containers()
+    data = [{"id": str(c["id"]), "name": str(c.get("name"))} for c in containers]
+    return data
+
+
+# --------------------------------------------------------------------------
+# Editor handling
+# --------------------------------------------------------------------------
+
+
+def edit_file(tmp_path: Path, editor_mode_override: str | None) -> None:
+    """Open tmp_path in $EDITOR and block until the person is done editing.
+    Raises DockhandError for any setup problem (empty/missing editor).
+    """
+    editor_cmd = os.environ.get("EDITOR", "vi")
+    argv = shlex.split(editor_cmd)
+    if not argv:
+        raise DockhandError("$EDITOR is empty.")
+    if shutil.which(argv[0]) is None:
+        raise DockhandError(
+            f"Editor command '{argv[0]}' not found on $PATH (EDITOR=\"{editor_cmd}\")."
+        )
+
+    basename = os.path.basename(argv[0])
+    mode = (
+        editor_mode_override
+        or os.environ.get("DOCKHAND_EDITOR_MODE")
+        or ("gui" if basename in GUI_EDITORS else "terminal")
+    )
+
+    if mode == "gui":
+        subprocess.Popen(
+            [*argv, str(tmp_path)],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,
+        )
+        print(f"Opened in {basename}. This editor's --wait can't be trusted to block")
+        print("(especially if it was already running), so confirm manually instead.")
+        input(f"Press Enter here once you've saved and closed {tmp_path.name}: ")
+    else:
+        subprocess.run([*argv, str(tmp_path)])
+
+
+# --------------------------------------------------------------------------
+# CLI
+# --------------------------------------------------------------------------
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        prog="dockhand-edit",
+        description="Edit a file inside a Dockhand-managed container or volume using your local $EDITOR.",
+    )
+    sub = parser.add_subparsers(dest="mode", required=True)
+
+    p_container = sub.add_parser(
+        "container", help="Edit a file inside a running container"
+    )
+    p_container.add_argument("container_id", help="Container name or id")
+    p_container.add_argument("path")
+    p_container.add_argument(
+        "--env", dest="env_id", help="Environment name or numeric id"
+    )
+    p_container.add_argument(
+        "--editor-mode",
+        choices=["gui", "terminal"],
+        help="Override auto-detected editor blocking behavior",
+    )
+
+    p_volume = sub.add_parser("volume", help="Edit a file inside a Docker volume")
+    p_volume.add_argument("volume_name")
+    p_volume.add_argument("path")
+    p_volume.add_argument("--env", dest="env_id", help="Environment name or numeric id")
+    p_volume.add_argument(
+        "--editor-mode",
+        choices=["gui", "terminal"],
+        help="Override auto-detected editor blocking behavior",
+    )
+
+    # LIST
+    p_list = sub.add_parser("list", help="Dockhand List Utilities")
+    p_list_sub = p_list.add_subparsers(dest="list_mode", required=True)
+    p_list_sub.add_parser("environments", help="List all environments")
+    p_list_vols = p_list_sub.add_parser("volumes", help="List all volumes")
+    p_list_vols.add_argument(
+        "--env", dest="env_id", help="Environment name or numeric id"
+    )
+    p_list_containers = p_list_sub.add_parser("containers", help="List all containers")
+    p_list_containers.add_argument(
+        "--env", dest="env_id", help="Environment name or numeric id"
+    )
+
+    return parser.parse_args(argv)
+
+
+def load_config() -> tuple[str, str, str]:
+    missing = [
+        n
+        for n in ("DOCKHAND_URL", "DOCKHAND_USER", "DOCKHAND_PASSWORD")
+        if not os.environ.get(n)
+    ]
+    if missing:
+        raise DockhandError(
+            "Missing required environment variable(s): " + ", ".join(missing)
+        )
+
+    # .rstrip("\r\n") guards against a secrets backend or template leaving a
+    # trailing newline on a value; .rstrip("/") normalizes any number of
+    # trailing slashes on the URL so path-building never produces "//api/...".
+    url = os.environ["DOCKHAND_URL"].rstrip("\r\n").rstrip("/")
+    user = os.environ["DOCKHAND_USER"].rstrip("\r\n")
+    password = os.environ["DOCKHAND_PASSWORD"].rstrip("\r\n")
+    return url, user, password
+
+
+def sha256_file(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(65536), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def print_response_body(body: str) -> None:
+    try:
+        print(json.dumps(json.loads(body), indent=2))
+    except json.JSONDecodeError:
+        print(body)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
+
+    try:
+        base_url, user, password = load_config()
+    except DockhandError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 2
+
+    client = DockhandClient(base_url, user, password)
+
+    # write_back is bound per-mode so the rest of main() doesn't need to
+    # know whether it's talking to a container directly or a volume's
+    # helper container — same pattern the bash version used with WRITE_URL.
+    write_back: Callable[[str], str]
+
+    try:
+        
+        if args.mode == "list":
+            if args.list_mode == "environments":
+                pprint(list_environments(client))
+                return 0
+            resolved_env_id = resolve_environment_id(client, args.env_id)
+            client.env_id = resolved_env_id
+            if args.list_mode == "volumes":
+                pprint(list_volumes(client))
+            elif args.list_mode == "containers":
+                pprint(list_containers(client))
+            return 0
+        resolved_env_id = resolve_environment_id(client, args.env_id)
+        client.env_id = resolved_env_id
+        print(f"Fetching {args.path} ...")
+        if args.mode == "container":
+            container_id = resolve_container_id(client, args.container_id)
+            content = client.read_container_file(container_id, args.path)
+            write_back = lambda new_content: client.write_container_file(
+                container_id, args.path, new_content
+            )
+        else:
+            content = client.read_volume_file(args.volume_name, args.path)
+            parent = posixpath.dirname(args.path) or "."
+            helper_id = client.browse_volume_helper_id(args.volume_name, parent)
+            write_back = lambda new_content: client.write_container_file(
+                helper_id, args.path, new_content
+            )
+    except DockhandError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
+
+    fd, tmp_name = tempfile.mkstemp(suffix="-" + os.path.basename(args.path))
+    tmp_path = Path(tmp_name)
+    with os.fdopen(fd, "w", encoding="utf-8") as f:
+        f.write(content)
+
+    checksum_before = sha256_file(tmp_path)
+
+    try:
+        edit_file(tmp_path, args.editor_mode)
+    except DockhandError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        tmp_path.unlink(missing_ok=True)
+        return 1
+
+    checksum_after = sha256_file(tmp_path)
+
+    if checksum_before == checksum_after:
+        print("No changes made — not writing back.")
+        tmp_path.unlink(missing_ok=True)
+        return 0
+
+    print(f"Writing changes back to {args.path} ...")
+    new_content = tmp_path.read_text(encoding="utf-8")
+
+    try:
+        response_body = write_back(new_content)
+    except DockhandError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        print(f"Your local edits are preserved at: {tmp_path}", file=sys.stderr)
+        return 1  # deliberately not deleting tmp_path here
+
+    tmp_path.unlink(missing_ok=True)
+    print_response_body(response_body)
+    print("Done.")
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        print("\nInterrupted.", file=sys.stderr)
+        sys.exit(130)
