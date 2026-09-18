@@ -17,34 +17,25 @@ local mainMod = "SUPER"
 -- Sets "Windows" key as main modifier
 
 local terminal = "kitty"
-
 local fileManager = "thunar"
-
 local menu = "hyprlauncher"
 
 -- Example binds, see https://wiki.hypr.land/Configuring/Binds/ for more
 
 hl.bind(mainMod .. " + " .. "Q", hl.dsp.exec_cmd("kitty"))
-
+hl.bind(mainMod .. " + " .. "return", hl.dsp.exec_cmd("ghostty +new-window"))
 hl.bind(mainMod .. " + " .. "C", hl.dsp.window.close())
-
 hl.bind(mainMod .. " + " .. "M",
     hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch exit"))
-
 hl.bind(mainMod .. " + " .. "E", hl.dsp.exec_cmd("thunar"))
-
 hl.bind(mainMod .. " + " .. "V", hl.dsp.window.float())
-
 hl.bind(mainMod .. " + " .. "R", hl.dsp.exec_cmd("hyprlauncher"))
-
 hl.bind(mainMod .. " + " .. "P", hl.dsp.window.pseudo())
 
 -- dwindle
 
 hl.bind(mainMod .. " + " .. "J", hl.dsp.layout("togglesplit"))
-
 hl.bind(mainMod .. " + " .. "D", hl.dsp.global("caelestia:launcher"))
-
 hl.bind(mainMod .. " + " .. "F", hl.dsp.window.fullscreen())
 
 -- Move focus with mainMod + arrow keys
