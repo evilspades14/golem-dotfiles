@@ -52,7 +52,12 @@ Required environment variables:
   DOCKHAND_PASSWORD  Authelia service account password
 
 Optional environment variables:
-  EDITOR             defaults to 'vi'
+  EDITOR              defaults to 'vi'
+  DOCKHAND_EDITOR_MODE  'gui' or 'terminal', overrides auto-detection of
+                        whether to wait for a manual confirmation (needed
+                        for GUI editors like zed/code whose --wait can be
+                        unreliable) or block on the editor process (normal
+                        for terminal editors like vim/nano)
 EOF
 }
 
@@ -147,6 +152,16 @@ if [[ ${#missing_env[@]} -gt 0 ]]; then
   exit 2
 fi
 
+# Defensive: strip any trailing CR/LF that a secrets backend or template
+# might leave on a value (e.g. a CLI tool's stdout retaining its newline
+# when substituted verbatim into a template rather than via command
+# substitution). A stray newline in a Basic Auth username/password fails
+# with a confusing 401 rather than an obvious parse error, so it's worth
+# guarding here even though the real fix belongs in the secrets pipeline.
+DOCKHAND_URL="${DOCKHAND_URL%$'\r'}"; DOCKHAND_URL="${DOCKHAND_URL%$'\n'}"
+DOCKHAND_USER="${DOCKHAND_USER%$'\r'}"; DOCKHAND_USER="${DOCKHAND_USER%$'\n'}"
+DOCKHAND_PASSWORD="${DOCKHAND_PASSWORD%$'\r'}"; DOCKHAND_PASSWORD="${DOCKHAND_PASSWORD%$'\n'}"
+
 # Strip any trailing slash(es) so URL-building below never produces
 # "//api/..." — a loop rather than a single ${VAR%/} in case the value
 # has more than one (e.g. a URL field with a stray double slash).
@@ -232,7 +247,52 @@ fi
 
 CHECKSUM_BEFORE="$(sha256sum "$TMP" | awk '{print $1}')"
 
-"$EDITOR" "$TMP"
+# EDITOR is often a command plus flags (e.g. "zeditor --wait", "code --wait"),
+# so it has to be split into an argv array rather than invoked as a single
+# quoted token — "$EDITOR" "$TMP" would otherwise look for a binary literally
+# named "zeditor --wait" and fail with "command not found".
+read -ra EDITOR_ARGV <<< "$EDITOR"
+if [[ ${#EDITOR_ARGV[@]} -eq 0 ]]; then
+  echo "Error: \$EDITOR is empty." >&2
+  exit 1
+fi
+if ! command -v "${EDITOR_ARGV[0]}" >/dev/null 2>&1; then
+  echo "Error: editor command '${EDITOR_ARGV[0]}' not found on \$PATH." >&2
+  echo "(EDITOR=\"${EDITOR}\")" >&2
+  exit 1
+fi
+
+# GUI editors with a single-instance architecture (Zed, VS Code, Cursor,
+# Sublime, etc.) don't reliably block on their own --wait flag when an
+# instance is already running — Zed in particular has an open upstream bug
+# for exactly this (zed-industries/zed#54203). Rather than trust the process
+# exit to mean "done editing", launch these in the background and wait for
+# an explicit confirmation instead. Terminal editors (vim, nano, ...) still
+# run in the foreground and block naturally, which is more convenient when
+# it works. DOCKHAND_EDITOR_MODE=gui|terminal overrides the auto-detection.
+GUI_EDITORS=(code code-insiders cursor zed zeditor subl sublime_text atom gedit kate)
+EDITOR_BASENAME="$(basename "${EDITOR_ARGV[0]}")"
+EDITOR_MODE="${DOCKHAND_EDITOR_MODE:-}"
+
+if [[ -z "$EDITOR_MODE" ]]; then
+  EDITOR_MODE="terminal"
+  for g in "${GUI_EDITORS[@]}"; do
+    if [[ "$EDITOR_BASENAME" == "$g" ]]; then
+      EDITOR_MODE="gui"
+      break
+    fi
+  done
+fi
+
+if [[ "$EDITOR_MODE" == "gui" ]]; then
+  "${EDITOR_ARGV[@]}" "$TMP" >/dev/null 2>&1 &
+  disown
+  echo "Opened in ${EDITOR_BASENAME}. This editor's --wait can't be trusted to block"
+  echo "(especially if it was already running), so confirm manually instead."
+  read -rp "Press Enter here once you've saved and closed ${FPATH}: " _
+else
+  "${EDITOR_ARGV[@]}" "$TMP"
+fi
 
 CHECKSUM_AFTER="$(sha256sum "$TMP" | awk '{print $1}')"
 
