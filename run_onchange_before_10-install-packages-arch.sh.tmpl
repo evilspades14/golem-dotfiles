@@ -1,5 +1,6 @@
 {{ if eq .chezmoi.osRelease.id "arch" }}
 #!/bin/bash
+# {{ include ".chezmoidata/packages.yaml" | sha256sum }}
 set -eufo pipefail
 
 sudo pacman -S --needed --noconfirm \
