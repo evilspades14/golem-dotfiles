@@ -4,5 +4,6 @@ if [ "$TERM" = "xterm-kitty" ]; then
     alias ssh='kitty +kitten ssh'
 fi
 
-alias edit-caddy="dockhand-edit container caddy /etc/caddy/Caddyfile --env catapult-dragon"
-alias reload-caddy="ssh evilspades@catapult-dragon.local 'docker exec caddy caddy -c /etc/caddy/Caddyfile reload'"
+alias caddy-reload="ssh evilspades@catapult-dragon.local 'docker exec caddy caddy -c /etc/caddy/Caddyfile reload'"
+alias caddy-edit="dockhand-edit container caddy /etc/caddy/Caddyfile --env catapult-dragon; caddy-reload"
+
