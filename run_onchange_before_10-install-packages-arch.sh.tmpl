@@ -13,7 +13,3 @@ yay -S --needed --noconfirm \
   {{ . | quote }} \
 {{ end }}
 {{ end -}}
-
-sudo npm install -g {{ range .packages.npm -}} \
-  {{ . | quote }} \
-{{ end }}
