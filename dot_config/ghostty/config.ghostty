@@ -1,7 +1,10 @@
-theme = Visiblue
+theme = abyssal
 font-family = "CaskaydiaCove Nerd Font Mono"
 
 shell-integration = zsh
 shell-integration-features = ssh-env,ssh-terminfo
 
 background-opacity = 0.8
+
+window-padding-x = 2
+window-padding-y = 2
