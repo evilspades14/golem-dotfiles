@@ -4,7 +4,7 @@
 .config/remmina
 .config/kitty
 .config/ghostty
-{{ if ne .chezmoi.osRelease.id "arch" }}
+{{ if ne .chezmoi.osRelease "arch" }}
 run_onchange_before_10-install-packages-arch.sh
 .config/caelestia
 .config/hypr
