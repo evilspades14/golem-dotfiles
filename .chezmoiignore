@@ -1,18 +1,19 @@
-{{ if ne .chezmoi.os "linux" }}
+{{ if eq .chezmoi.os "windows" }}
 .zshrc
 .zprofile
+.zsh
 .config/remmina
 .config/kitty
 .config/ghostty
-{{ if ne .chezmoi.osRelease.id "arch" }}
 run_onchange_before_10-install-packages-arch.sh
+run_onchange_before_10-install-packages-ubuntu.sh.tmpl
+run_onchange_regenerate-theme.sh.tmpl
 .config/caelestia
 .config/hypr
 10-install-packages-arch.sh
 {{ end }}
-{{ end }}
 
-{{ if ne .chezmoi.os "windows" }}
+{{ if eq .chezmoi.os "linux" }}
 .config/yasb
 10-install-packages-win.ps1
 {{ end }}

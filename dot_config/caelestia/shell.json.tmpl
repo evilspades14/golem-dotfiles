@@ -183,31 +183,31 @@
     }
   },
   "background": {
+    "enabled": true,
+    "wallpaperEnabled": true,
     "desktopClock": {
-      "background": {
-        "blur": true,
-        "enabled": false,
-        "opacity": 0.7
-      },
-      "enabled": true,
-      "invertColors": false,
+      "enabled": false,
+      "scale": 1.0,
       "position": "bottom-right",
-      "scale": 1,
+      "invertColors": false,
+      "background": {
+        "enabled": false,
+        "opacity": 0.7,
+        "blur": true
+      },
       "shadow": {
-        "blur": 0.4,
         "enabled": true,
-        "opacity": 0.7
+        "opacity": 0.7,
+        "blur": 0.4
       }
     },
-    "enabled": true,
     "visualiser": {
+      "enabled": false,
       "autoHide": true,
       "blur": false,
-      "enabled": false,
       "rounding": 1,
       "spacing": 1
-    },
-    "wallpaperEnabled": true
+    }
   },
   "bar": {
     "clock": {
@@ -259,7 +259,7 @@
       },
       {
         "id": "audio",
-        "enabled": false
+        "enabled": true
       },
       {
         "id": "microphone",
@@ -568,7 +568,7 @@
       "vpnChanged": true
     },
     "vpn": {
-      "enabled": true,
+      "enabled": false,
       "provider": [
         {
           "displayName": "Homegolem VPN",
