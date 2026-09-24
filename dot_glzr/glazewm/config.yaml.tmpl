@@ -26,7 +26,7 @@ gaps:
   outer_gap:
     top: "10px"
     right: "10px"
-    bottom: "50px"
+    bottom: "30px"
     left: "10px"
 window_effects:
   # Visual effects to apply to the focused window.
@@ -35,13 +35,13 @@ window_effects:
     # ** Exclusive to Windows 11 due to API limitations.
     border:
       enabled: true
-      color: "#812bfb"
+      color: "#6c70e0"
   # Visual effects to apply to non-focused windows.
 
   other_windows:
     border:
       enabled: true
-      color: "#393939"
+      color: "#333366"
 window_behavior:
   # New windows are created in this state whenever possible.
   # Allowed values: 'tiling', 'floating'.
@@ -67,39 +67,39 @@ window_behavior:
 workspaces:
   - name: "1"
     display_name: "Primary"
-    bind_to_monitor: 1
+    # bind_to_monitor: 1
     # keep_alive: true
   - name: "2"
     display_name: "Work"
-    bind_to_monitor: 1
+    # bind_to_monitor: 1
     # keep_alive: true
   - name: "3"
     display_name: "Work"
-    bind_to_monitor: 1
+    # bind_to_monitor: 1
     # keep_alive: true
   - name: "4"
     display_name: "Document"
-    bind_to_monitor: 0
+    # bind_to_monitor: 0
     # keep_alive: true
   - name: "5"
     display_name: "Chat"
-    bind_to_monitor: 0
+    # bind_to_monitor: 0
     # keep_alive: true
   - name: "6"
     display_name: "Media"
-    bind_to_monitor: 0
+    # bind_to_monitor: 0
     # keep_alive: true
   - name: "7"
     display_name: "Browser"
-    bind_to_monitor: 2
+    # bind_to_monitor: 2
     # keep_alive: true
   - name: "8"
     display_name: "Browser"
-    bind_to_monitor: 2
+    # bind_to_monitor: 2
     # keep_alive: true
   - name: "9"
     display_name: "Media"
-    bind_to_monitor: 2
+    # bind_to_monitor: 2
     # keep_alive: true
 window_rules:
   - commands: ["ignore"]
