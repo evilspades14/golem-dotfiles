@@ -1,6 +1,7 @@
 {{ if eq .chezmoi.os "windows" }}
 .zshrc
 .zprofile
+.zsh
 .config/remmina
 .config/kitty
 .config/ghostty
