@@ -5,8 +5,8 @@
 .config/remmina
 .config/kitty
 .config/ghostty
-install-packages-arch.sh
-install-packages-ubuntu.sh.tmpl
+10-install-packages-arch.sh
+10-install-packages-ubuntu.sh.tmpl
 regenerate-theme.sh.tmpl
 .config/caelestia
 .config/hypr
