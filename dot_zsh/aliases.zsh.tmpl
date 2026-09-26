@@ -7,10 +7,15 @@ alias reboot-windows="systemctl reboot --boot-loader-entry='auto-windows'"
 {{ end }}
 alias ls="eza -l --icons -a"
 
+## CONTAINER WORKFLOWS
+
 alias caddy-reload="ssh evilspades@catapult-dragon.local 'docker exec caddy caddy -c /etc/caddy/Caddyfile reload'"
 alias caddy-edit="dockhand-edit container caddy /etc/caddy/Caddyfile --env catapult-dragon; caddy-reload"
+alias authelia-cli="ssh evilspades@catapult-dragon.local 'docker exec authelia'"
 
 alias szsh="source ~/.zshrc"
+
+## SSH
 
 alias catapult-dragon="ssh evilspades@catapult-dragon.local"
 alias cyber-magician="ssh evilspades@cyber-magician.local"
