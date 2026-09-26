@@ -11,7 +11,7 @@ alias ls="eza -l --icons -a"
 
 alias caddy-reload="ssh evilspades@catapult-dragon.local 'docker exec caddy caddy -c /etc/caddy/Caddyfile reload'"
 alias caddy-edit="dockhand-edit container caddy /etc/caddy/Caddyfile --env catapult-dragon; caddy-reload"
-alias authelia-cli="ssh evilspades@catapult-dragon.local 'docker exec authelia'"
+alias authelia-cli="ssh evilspades@catapult-dragon.local 'docker exec authelia authelia'"
 
 alias szsh="source ~/.zshrc"
 
