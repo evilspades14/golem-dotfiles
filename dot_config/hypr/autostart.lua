@@ -12,7 +12,7 @@
 hl.on("hyprland.start", function()
     hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE DISPLAY")
     hl.exec_cmd("dbus-update-activation-environment --systemd --all")
-    hl.exec_cmd("systemctl --user restart hyprpolkitagent.service")
+    -- hl.exec_cmd("systemctl --user restart hyprpolkitagent.service")
     hl.exec_cmd("caelestia shell -d")
     hl.exec_cmd("hyprctl setcursor Bibata-Modern-Classic 24")
     hl.exec_cmd("gsettings set org.gnome.desktop.interface gtk-theme 'abyssal-16'")
