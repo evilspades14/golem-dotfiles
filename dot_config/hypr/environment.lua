@@ -16,8 +16,8 @@ hl.env("QT_QPA_PLATFORMTHEME", "qt5ct")
 -- hl.env("QT_STYLE_OVERRIDE", "oomox")
 -- hl.env("QT_QPA_PLATFORM", "wayland")
 
-hl.config({
-  xwayland = {
-    force_zero_scaling = true
-  }
-})
+-- hl.config({
+--   xwayland = {
+--     force_zero_scaling = true
+--   }
+-- })
