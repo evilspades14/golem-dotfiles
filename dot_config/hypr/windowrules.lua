@@ -118,6 +118,15 @@ hl.window_rule({
 })
 
 hl.window_rule({
+    float = true,
+    match = {
+        initial_class = "ghostty",
+    },
+    size = { "monitor_w * 0.7", "monitor_h * 0.7" },
+    opacity = "0.80 0.80 1",
+})
+
+hl.window_rule({
     name  = "opacity_0_80____0_80",
     match = {
         class = "^(org.kde.dolphin)$",

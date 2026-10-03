@@ -29,6 +29,7 @@ local input = require("input")
 {{- if stat (joinPath .chezmoi.homeDir ".config/hypr/local.lua") }}
 local local_ = require("local")
 {{- end }}
+local animations = require("abyssal-animations")
 
 hl.env("XDG_MENU_PREFIX", "arch-")
 
