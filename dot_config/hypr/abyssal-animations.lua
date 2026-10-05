@@ -70,7 +70,7 @@ hl.animation({ leaf = "layersOut", enabled = true, speed = 4, bezier = "sink",  
 -- Borders: colour changes (focus) ease slowly; optional drifting gradient
 hl.animation({ leaf = "border", enabled = true, speed = 9, bezier = "murk" })
 if DRIFTING_BORDER then
-    hl.animation({ leaf = "borderangle", enabled = true, speed = 160, bezier = "linear", style = "loop" })
+    hl.animation({ leaf = "borderangle", enabled = true, speed = 80, bezier = "linear", style = "loop" })
 else
     hl.animation({ leaf = "borderangle", enabled = false })
 end
