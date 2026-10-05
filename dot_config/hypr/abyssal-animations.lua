@@ -14,7 +14,7 @@
 -- Slowly rotating gradient border. This is the signature abyssal effect with a
 -- two-or-three-stop blue/purple gradient, but "loop" forces a new frame every
 -- refresh, which costs battery/GPU. Off by default.
-local DRIFTING_BORDER = false
+local DRIFTING_BORDER = true
 
 hl.config({
     animations = { enabled = true },
